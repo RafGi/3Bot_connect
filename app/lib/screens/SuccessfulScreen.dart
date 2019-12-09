@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:threebotlogin/services/WebviewService.dart';
+import 'package:threebotlogin/main.dart';
 
 class SuccessfulScreen extends StatefulWidget {
   final Widget successfulscreen;
@@ -11,7 +11,17 @@ class SuccessfulScreen extends StatefulWidget {
 }
 
 Future<bool> _onWillPop() {
-  showLastOpenendWebview();
+  var index = 0;
+
+  for (var flutterWebViewPlugin in flutterWebViewPlugins) {
+    if (flutterWebViewPlugin != null) {
+      if (index == lastAppUsed) {
+        flutterWebViewPlugin.show();
+        showButton = true;
+      }
+      index++;
+    }
+  }
   return Future.value(true);
 }
 

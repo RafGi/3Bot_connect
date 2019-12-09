@@ -4,7 +4,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:threebotlogin/screens/LoginScreen.dart';
 import 'package:threebotlogin/services/3botService.dart';
-import 'package:threebotlogin/services/WebviewService.dart';
 import 'package:threebotlogin/services/cryptoService.dart';
 import 'package:threebotlogin/services/openKYCService.dart';
 import 'package:threebotlogin/services/userService.dart';
@@ -20,7 +19,7 @@ void initFirebaseMessagingListener(context) async {
       openLogin(context, message);
     },
     onLaunch: (Map<String, dynamic> message) async {
-      logger.log('On launch $message');
+      logger.log('On launch $message'); 
       openLogin(context, message);
     },
     onResume: (Map<String, dynamic> message) async {
@@ -39,6 +38,8 @@ void initFirebaseMessagingListener(context) async {
 }
 
 Future openLogin(context, message) async {
+  logger.log('OpenLogin');
+
   var data = message['data'];
 
   if (Platform.isIOS) {
@@ -46,7 +47,10 @@ Future openLogin(context, message) async {
   }
 
   if (data['logintoken'] != null) {
+    logger.log('---------------');
+    logger.log('Got loginToken');
     if (data['logintoken'] == await getLoginToken()) {
+      logger.log('sendIt');
       var state = data['state'];
       var publicKey = data['appPublicKey'];
       var privateKey = getPrivateKey();
@@ -56,6 +60,8 @@ Future openLogin(context, message) async {
       var signedHash = signData(state, await privateKey);
       var scope = {};
       var dataToSend;
+
+      // Dead code ? 
 
       if (data['scope'] != null) {
         if (data['scope'].split(",").contains('user:email')) {
@@ -67,6 +73,7 @@ Future openLogin(context, message) async {
         }
       }
 
+      
       if (scope.isNotEmpty) {
         logger.log(scope.isEmpty);
         dataToSend =
@@ -80,7 +87,12 @@ Future openLogin(context, message) async {
       Navigator.popUntil(context, ModalRoute.withName('/'));
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => LoginScreen(data)));
-          hideWebviews();
+          for (var flutterWebViewPlugin in flutterWebViewPlugins) {
+            if (flutterWebViewPlugin != null) {
+              flutterWebViewPlugin.hide();
+            }
+          }
+          
     } else if (data['type'] == 'email_verification') {
       getEmail().then((email) async {
         if (email['email'] != null && (await getSignedEmailIdentifier()) == null) {

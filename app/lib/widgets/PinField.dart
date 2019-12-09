@@ -45,7 +45,7 @@ class _PinFieldState extends State<PinField> {
     {Color backgroundColor: Colors.blueGrey}) {
     var onPressedMethod = () => handleInput(buttonText);
     double height = MediaQuery.of(context).size.height;
-
+    
     if (buttonText == 'OK')
       onPressedMethod = input.length >= widget.pinLength ? () => onOk() : null;
     if (buttonText == 'C')
@@ -145,6 +145,7 @@ class _PinFieldState extends State<PinField> {
     HapticFeedback.mediumImpact();
     String pin = "";
     input.forEach((char) => pin += char);
+    logger.log(pin);
     if (widget.callbackParam != null) {
       widget.callback(pin, widget.callbackParam);
     } else {

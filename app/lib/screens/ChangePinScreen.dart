@@ -100,7 +100,7 @@ class _ChangePinScreenState extends State<ChangePinScreen> {
        setState(() {
         newPin = null;
       });
-
+      
       _scaffoldKey.currentState.showSnackBar(SnackBar(
           content: Text('Oops... pin is the same as current pin'),
           duration: Duration(milliseconds: 500)));

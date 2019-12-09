@@ -118,10 +118,19 @@ class _ScannerState extends State<Scanner> with TickerProviderStateMixin {
       await controller.initialize();
       initiated = true;
     } on Exception catch (e) {
+      logger
+          .log('-------------------------------------------------------------');
+      logger
+          .log('-------------------------------------------------------------');
       logger.log(e);
+      logger
+          .log('-------------------------------------------------------------');
+      logger
+          .log('-------------------------------------------------------------');
     }
 
     if (mounted && initiated) {
+      setState(() {});
       controller.startScanning();
     }
   }

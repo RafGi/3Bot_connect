@@ -136,7 +136,7 @@ class _RegistrationWithoutScanScreen
       var signedHash = signData(hash, privateKey);
       var data = encrypt(jsonEncode(scope), publicKey, privateKey);
 
-      sendData(hash, await signedHash, await data, null).then((_) {
+      sendData(hash, await signedHash, await data, null).then((x) {
         SystemChannels.platform.invokeMethod('SystemNavigator.pop');
         Navigator.popUntil(context, ModalRoute.withName('/'));
         Navigator.of(context).pushNamed('/registered');
@@ -145,6 +145,8 @@ class _RegistrationWithoutScanScreen
 
     await sendRegisterSign(doubleName);
     await sendVerificationEmail();
+
+    print('signing $doubleName');
 
     Navigator.popUntil(context, ModalRoute.withName('/'));
     Navigator.of(context).pushNamed('/registered');
