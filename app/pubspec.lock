@@ -103,8 +103,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: HEAD
-      resolved-ref: cda874c1b8d65e6821cbfd1e639571fbb9b94e0b
+      ref: development
+      resolved-ref: e191222e0145f17fe4b1ac9793e38c04cab1cde4
       url: "https://github.com/coeneivan/flutter_webview_plugin"
     source: git
     version: "0.3.5"
@@ -226,7 +226,7 @@ packages:
       name: shared_preferences_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.1"
   sky_engine:
     dependency: transitive
     description: flutter

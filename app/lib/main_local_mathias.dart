@@ -7,9 +7,9 @@ import 'main.dart';
 void main() async {
   var config = Config(
       name: '3bot local',
-      threeBotApiUrl: 'http://192.168.2.62:5000/api',
-      openKycApiUrl: 'http://192.168.2.62:5005',
-      threeBotFrontEndUrl: 'http://192.168.2.62:8081/',
+      threeBotApiUrl: 'http://192.168.1.2:5000/api',
+      openKycApiUrl: 'http://192.168.1.2:5005',
+      threeBotFrontEndUrl: 'http://192.168.1.2:8081/',
       child: new MyApp());
 
   init();
@@ -83,8 +83,9 @@ void main() async {
       ),
       "subheading": 'Chat with your 3Bot',
       "disabled": false,
-      "url": 'https://chatbot.threefold.io?name=*name*&email=*email*',
-      "initialUrl": 'https://chatbot.threefold.io?name=*name*&email=*email*',
+      'cookieUrl': '',
+      "url": 'https://test.singlecore.be/',
+      "initialUrl": 'https://test.singlecore.be/',
       "visible": false,
       "id": 4,
       'color': 0xFF708fa0,

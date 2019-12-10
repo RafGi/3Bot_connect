@@ -50,6 +50,14 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   bool chatViewIsShown = false;
   bool isRegistered = false;
 
+  final Set<JavascriptChannel> jsChannels = [
+    JavascriptChannel(
+        name: 'Print',
+        onMessageReceived: (JavascriptMessage message) {
+          print(message.message);
+        }),
+  ].toSet();
+
   // We will treat this error as a singleton
   WebViewHttpError webViewError;
 
@@ -935,9 +943,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         logger.log("!!!loadUrl: " + loadUrl);
         var cookieList = List<Cookie>();
         cookieList.add(Cookie.fromSetCookieValue(cookies));
-
         await flutterWebViewPlugins[appId]
             .launch(loadUrl,
+                javascriptChannels: jsChannels,
                 rect: Rect.fromLTWH(
                     0.0, appBar.preferredSize.height, size.width, size.height),
                 userAgent: kAndroidUserAgent,
@@ -953,6 +961,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       } else if (localStorageKeys != null) {
         await flutterWebViewPlugins[appId]
             .launch(loadUrl + '/error',
+                javascriptChannels: jsChannels,
                 rect: Rect.fromLTWH(
                     0.0, appBar.preferredSize.height, size.width, size.height),
                 userAgent: kAndroidUserAgent,
@@ -1003,6 +1012,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       } else {
         await flutterWebViewPlugins[appId]
             .launch(loadUrl,
+                javascriptChannels: jsChannels,
                 rect: Rect.fromLTWH(
                     0.0, appBar.preferredSize.height, size.width, size.height),
                 userAgent: kAndroidUserAgent,
