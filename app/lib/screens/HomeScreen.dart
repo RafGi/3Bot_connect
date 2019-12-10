@@ -479,7 +479,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   alignment: Alignment.centerLeft,
                   child: Container(
                     padding: new EdgeInsets.all(10.0),
-                    child: Text("Pages",
+                    child: Text("Threefold News Circles",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18)),
                   ),
@@ -702,7 +702,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Text(
-                      "Bot",
+                      "Bot connect",
                       style:
                           TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,

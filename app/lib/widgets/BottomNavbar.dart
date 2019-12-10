@@ -44,19 +44,7 @@ class BottomNavBarState extends State<BottomNavBar> {
         ),
         new BottomNavigationBarItem(
           icon: Icon(Icons.account_balance_wallet),
-          title: Text('Pay'),
-        ),
-        new BottomNavigationBarItem(
-          icon: Icon(
-            Icons.supervised_user_circle,
-            color: Colors.grey.shade700,
-          ),
-          title: Text(
-            'Circles',
-            style: new TextStyle(
-              color: Colors.grey.shade700,
-            ),
-          ),
+          title: Text('Wallet'),
         ),
         new BottomNavigationBarItem(
             icon: Icon(Icons.people), title: Text('Social')),
