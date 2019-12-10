@@ -35,6 +35,8 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
+var _homeScreenInstance;
+
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   bool openPendingLoginAttempt = true;
   String doubleName = '';
@@ -53,8 +55,70 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   final Set<JavascriptChannel> jsChannels = [
     JavascriptChannel(
         name: 'Print',
-        onMessageReceived: (JavascriptMessage message) {
-          print(message.message);
+        onMessageReceived: (JavascriptMessage message) async {
+          // for (var flutterWebViewPlugin in flutterWebViewPlugins) {
+          //   if (flutterWebViewPlugin != null) {
+          //     flutterWebViewPlugin.hide();
+          //   }
+          // }
+
+          dynamic msg = json.decode(message.message);
+
+          // showDialog(
+          //   context: _homeScreenInstance.bodyContext,
+          //   barrierDismissible: false,
+          //   builder: (BuildContext context) => CustomDialog(
+          //     image: Icons.check,
+          //     title: "Callback",
+          //     description: new Text(message.message),
+          //     actions: <Widget>[
+          //       FlatButton(
+          //         child: new Text("Ok"),
+          //         onPressed: () {
+          //           Navigator.pop(context);
+          //           _homeScreenInstance.setState(() {});
+          //         },
+          //       ),
+          //     ],
+          //   ),
+          // );
+
+          logger.log(msg['type'].toUpperCase());
+
+          switch (msg['type'].toUpperCase()) {
+            case 'CAMERA':
+              //TODO Implement with IOS
+              break;
+
+            case 'ADD_IMPORT_WALLET':
+              await saveImportedWallet(message.message);
+
+              var tmp = await getImportedWallets();
+              logger.log(tmp);
+
+              String jsonString = "[" + tmp.join(',') + "]";
+
+              await flutterWebViewPlugins[3].evalJavascript("var wallets = JSON.parse('" + jsonString + "'); console.log(wallets.length); alert(wallets);");
+              // flutterWebViewPlugins[3].show();
+              break;
+
+            case 'ADD_APP_WALLET':
+              await saveAppWallet(message.message);
+
+              var tmp = await getAppWallets();
+              logger.log(tmp);
+
+              String jsonString = "[" + tmp.join(',') + "]";
+              await flutterWebViewPlugins[3].evalJavascript("var wallets = JSON.parse('" + jsonString + "'); console.log(wallets.length); alert(wallets);");
+              // flutterWebViewPlugins[3].show();
+              break;
+
+            case 'OTHER':
+              break;
+
+            default:
+              break;
+          }
         }),
   ].toSet();
 
@@ -88,6 +152,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     );
     WidgetsBinding.instance.addObserver(this);
     onActivate(true);
+    _homeScreenInstance = this;
   }
 
   Future<void> webViewResizer(keyboardUp) async {
