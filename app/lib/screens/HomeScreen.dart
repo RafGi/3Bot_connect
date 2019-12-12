@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -56,34 +57,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     JavascriptChannel(
         name: 'Print',
         onMessageReceived: (JavascriptMessage message) async {
-          // for (var flutterWebViewPlugin in flutterWebViewPlugins) {
-          //   if (flutterWebViewPlugin != null) {
-          //     flutterWebViewPlugin.hide();
-          //   }
-          // }
-
           dynamic msg = json.decode(message.message);
-
-          // showDialog(
-          //   context: _homeScreenInstance.bodyContext,
-          //   barrierDismissible: false,
-          //   builder: (BuildContext context) => CustomDialog(
-          //     image: Icons.check,
-          //     title: "Callback",
-          //     description: new Text(message.message),
-          //     actions: <Widget>[
-          //       FlatButton(
-          //         child: new Text("Ok"),
-          //         onPressed: () {
-          //           Navigator.pop(context);
-          //           _homeScreenInstance.setState(() {});
-          //         },
-          //       ),
-          //     ],
-          //   ),
-          // );
-
-          logger.log(msg['type'].toUpperCase());
 
           switch (msg['type'].toUpperCase()) {
             case 'CAMERA':
@@ -92,14 +66,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
             case 'ADD_IMPORT_WALLET':
               await saveImportedWallet(message.message);
-
-              var tmp = await getImportedWallets();
-              logger.log(tmp);
-
-              String jsonString = "[" + tmp.join(',') + "]";
-
-              await flutterWebViewPlugins[3].evalJavascript("var wallets = JSON.parse('" + jsonString + "'); console.log(wallets.length); alert(wallets);");
-              // flutterWebViewPlugins[3].show();
               break;
 
             case 'ADD_APP_WALLET':
@@ -109,10 +75,16 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               logger.log(tmp);
 
               String jsonString = "[" + tmp.join(',') + "]";
-              await flutterWebViewPlugins[3].evalJavascript("var wallets = JSON.parse('" + jsonString + "'); console.log(wallets.length); alert(wallets);");
+              await flutterWebViewPlugins[3].evalJavascript(
+                  "var wallets = JSON.parse('" +
+                      jsonString +
+                      "'); console.log(wallets.length); alert(wallets);");
               // flutterWebViewPlugins[3].show();
               break;
 
+            case 'COPY':
+              //TODO CHeck if this is possible
+              break;
             case 'OTHER':
               break;
 
@@ -1047,9 +1019,14 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         final privateKey = await getPrivateKey();
         final signedHash = await signData(state, privateKey);
 
-        var jsToExecute =
-            "(function() { try {window.localStorage.setItem('tempKeys', \'{\"privateKey\": \"${keys["privateKey"]}\", \"publicKey\": \"${keys["publicKey"]}\"}\');  window.localStorage.setItem('state', '$state'); } catch (err) { return err; } })();";
+        var tmp = await getImportedWallets();
+        var jsToExecute = "(function() { try { window.localStorage.setItem('tempKeys', \'{\"privateKey\": \"${keys["privateKey"]}\", \"publicKey\": \"${keys["publicKey"]}\"}\');  window.localStorage.setItem('state', '$state'); } catch (err) { return err; } })();";
 
+        if(tmp != null) {
+          String jsonString = "[" + tmp.join(',') + "]";
+          jsToExecute = "(function() { try { window.localStorage.setItem('importedWallets', JSON.stringify(" + jsonString + ")); window.localStorage.setItem('tempKeys', \'{\"privateKey\": \"${keys["privateKey"]}\", \"publicKey\": \"${keys["publicKey"]}\"}\');  window.localStorage.setItem('state', '$state'); } catch (err) { return err; } })();";
+        }
+      
         sleep(const Duration(seconds: 1));
 
         final res =
@@ -1065,8 +1042,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         var jsonData = jsonEncode(encrypted);
         var data = Uri.encodeQueryComponent(jsonData); //Uri.encodeFull();
 
-        loadUrl =
-            'https://$appid$redirecturl${union}username=${await getDoubleName()}&signedhash=${Uri.encodeQueryComponent(signedHash)}&data=$data';
+        loadUrl = 'https://$appid$redirecturl${union}username=${await getDoubleName()}&signedhash=${Uri.encodeQueryComponent(signedHash)}&data=$data';
 
         logger.log("!!!loadUrl: " + loadUrl);
 

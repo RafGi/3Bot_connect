@@ -18,6 +18,14 @@ Future<Map<String, String>> generateKeyPair() async {
   };
 }
 
+String generateMnemonicFromSeed(String seed) {
+  return bip39.entropyToMnemonic(seed);
+}
+
+Uint8List generateSeedFromMnemonic(dynamic mnemonic) {
+  return bip39.mnemonicToSeed(mnemonic);
+}
+
 Uint8List toHex(String input) {
   double length = input.length / 2;
   Uint8List bytes = new Uint8List(length.ceil());
