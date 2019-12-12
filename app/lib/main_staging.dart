@@ -41,7 +41,6 @@ void main() async {
       'openInBrowser': true,
       'permissions': ['CAMERA']
     },
-    {"disabled": true, 'openInBrowser': false},
     {
       "content": Text(
         'FreeFlowPages',
@@ -57,7 +56,7 @@ void main() async {
       "disabled": false,
       "initialUrl": 'https://staging.freeflowpages.com/',
       "visible": false,
-      "id": 3,
+      "id": 2,
       'cookieUrl':
           'https://staging.freeflowpages.com/user/auth/external?authclient=3bot',
       'color': 0xFF708fa0,
@@ -87,7 +86,7 @@ void main() async {
       "url": 'https://chatbot.threefold.io?name=*name*&email=*email*',
       "initialUrl": 'https://chatbot.threefold.io?name=*name*&email=*email*',
       "visible": false,
-      "id": 4,
+      "id": 3,
       'color': 0xFF708fa0,
       'errorText': false,
       'openInBrowser': false,

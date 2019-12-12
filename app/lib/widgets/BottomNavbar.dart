@@ -18,12 +18,12 @@ class BottomNavBarState extends State<BottomNavBar> {
   final Color backgroundColor = HexColor("#2d4052");
 
   void _onItemTapped(int index) {
-    if (index == 2) {
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text("Coming soon"),
-      ));
-      return;
-    }
+    // if (index == 2) {
+    //   Scaffold.of(context).showSnackBar(SnackBar(
+    //     content: Text("Coming soon"),
+    //   ));
+    //   return;
+    // }
 
     widget.onItemTapped(index);
   }
