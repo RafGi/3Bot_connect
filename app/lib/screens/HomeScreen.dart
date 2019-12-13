@@ -71,15 +71,15 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             case 'ADD_APP_WALLET':
               await saveAppWallet(message.message);
 
-              var tmp = await getAppWallets();
-              logger.log(tmp);
+              // var tmp = await getAppWallets();
+              // logger.log(tmp);
 
-              String jsonString = "[" + tmp.join(',') + "]";
-              await flutterWebViewPlugins[3].evalJavascript(
-                  "var wallets = JSON.parse('" +
-                      jsonString +
-                      "'); console.log(wallets.length); alert(wallets);");
-              // flutterWebViewPlugins[3].show();
+              // String jsonString = "[" + tmp.join(',') + "]";
+              // await flutterWebViewPlugins[3].evalJavascript(
+              //     "var wallets = JSON.parse('" +
+              //         jsonString +
+              //         "'); console.log(wallets.length); alert(wallets);");
+              // // flutterWebViewPlugins[3].show();
               break;
 
             case 'COPY':
@@ -1019,18 +1019,27 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         final privateKey = await getPrivateKey();
         final signedHash = await signData(state, privateKey);
 
-        var tmp = await getImportedWallets();
-        var jsToExecute = "(function() { try { window.localStorage.setItem('tempKeys', \'{\"privateKey\": \"${keys["privateKey"]}\", \"publicKey\": \"${keys["publicKey"]}\"}\');  window.localStorage.setItem('state', '$state'); } catch (err) { return err; } })();";
+        var importedWallets = await getImportedWallets();
+        var appWallets = await getAppWallets();
 
-        if(tmp != null) {
-          String jsonString = "[" + tmp.join(',') + "]";
-          jsToExecute = "(function() { try { window.localStorage.setItem('importedWallets', JSON.stringify(" + jsonString + ")); window.localStorage.setItem('tempKeys', \'{\"privateKey\": \"${keys["privateKey"]}\", \"publicKey\": \"${keys["publicKey"]}\"}\');  window.localStorage.setItem('state', '$state'); } catch (err) { return err; } })();";
+        var jsToExecute = "(function() { try { window.localStorage.setItem('tempKeys', \'{\"privateKey\": \"${keys["privateKey"]}\", \"publicKey\": \"${keys["publicKey"]}\"}\');  window.localStorage.setItem('state', '$state'); } catch (err) { return err; } })();";
+        var moreJavascriptToExecute = "";
+
+        if(importedWallets != null) {
+          String jsonString = "[" + importedWallets.join(',') + "]";
+          moreJavascriptToExecute += "window.localStorage.setItem('importedWallets', JSON.stringify(" + jsonString + "));";
         }
+
+        if(appWallets != null) {
+          String jsonString = "[" + appWallets.join(',') + "]";
+          moreJavascriptToExecute += "window.localStorage.setItem('appWallets', JSON.stringify(" + jsonString + "));";
+        }
+
+        jsToExecute = "(function() { try { " + moreJavascriptToExecute + " window.localStorage.setItem('tempKeys', \'{\"privateKey\": \"${keys["privateKey"]}\", \"publicKey\": \"${keys["publicKey"]}\"}\');  window.localStorage.setItem('state', '$state'); } catch (err) { return err; } })();";
       
         sleep(const Duration(seconds: 1));
 
-        final res =
-            await flutterWebViewPlugins[appId].evalJavascript(jsToExecute);
+        final res = await flutterWebViewPlugins[appId].evalJavascript(jsToExecute);
         final appid = apps[appId]['appid'];
         final redirecturl = apps[appId]['redirecturl'];
         var scope = {};
