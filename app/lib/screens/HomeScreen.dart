@@ -73,7 +73,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               break;
 
             case 'ADD_APP_WALLET':
-            await flutterWebViewPlugins[1].hide();
               await saveAppWallet(message.message);
               break;
 
