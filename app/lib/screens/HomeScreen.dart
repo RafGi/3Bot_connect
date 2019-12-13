@@ -61,7 +61,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
           switch (msg['type'].toUpperCase()) {
             case 'CAMERA':
-              //TODO Implement with IOS
+              await flutterWebViewPlugins[1].hide();
+
+              _homeScreenInstance.setState(() {
+                Navigator.pushNamed(_homeScreenInstance.bodyContext, '/scan');
+              });
               break;
 
             case 'ADD_IMPORT_WALLET':
@@ -69,21 +73,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               break;
 
             case 'ADD_APP_WALLET':
+            await flutterWebViewPlugins[1].hide();
               await saveAppWallet(message.message);
-
-              // var tmp = await getAppWallets();
-              // logger.log(tmp);
-
-              // String jsonString = "[" + tmp.join(',') + "]";
-              // await flutterWebViewPlugins[3].evalJavascript(
-              //     "var wallets = JSON.parse('" +
-              //         jsonString +
-              //         "'); console.log(wallets.length); alert(wallets);");
-              // // flutterWebViewPlugins[3].show();
               break;
 
             case 'COPY':
-              //TODO CHeck if this is possible
               break;
             case 'OTHER':
               break;
@@ -1022,24 +1016,34 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         var importedWallets = await getImportedWallets();
         var appWallets = await getAppWallets();
 
-        var jsToExecute = "(function() { try { window.localStorage.setItem('tempKeys', \'{\"privateKey\": \"${keys["privateKey"]}\", \"publicKey\": \"${keys["publicKey"]}\"}\');  window.localStorage.setItem('state', '$state'); } catch (err) { return err; } })();";
+        var jsToExecute =
+            "(function() { try { window.localStorage.setItem('tempKeys', \'{\"privateKey\": \"${keys["privateKey"]}\", \"publicKey\": \"${keys["publicKey"]}\"}\');  window.localStorage.setItem('state', '$state'); } catch (err) { return err; } })();";
         var moreJavascriptToExecute = "";
 
-        if(importedWallets != null) {
+        if (importedWallets != null) {
           String jsonString = "[" + importedWallets.join(',') + "]";
-          moreJavascriptToExecute += "window.localStorage.setItem('importedWallets', JSON.stringify(" + jsonString + "));";
+          moreJavascriptToExecute +=
+              "window.localStorage.setItem('importedWallets', JSON.stringify(" +
+                  jsonString +
+                  "));";
         }
 
-        if(appWallets != null) {
+        if (appWallets != null) {
           String jsonString = "[" + appWallets.join(',') + "]";
-          moreJavascriptToExecute += "window.localStorage.setItem('appWallets', JSON.stringify(" + jsonString + "));";
+          moreJavascriptToExecute +=
+              "window.localStorage.setItem('appWallets', JSON.stringify(" +
+                  jsonString +
+                  "));";
         }
 
-        jsToExecute = "(function() { try { " + moreJavascriptToExecute + " window.localStorage.setItem('tempKeys', \'{\"privateKey\": \"${keys["privateKey"]}\", \"publicKey\": \"${keys["publicKey"]}\"}\');  window.localStorage.setItem('state', '$state'); } catch (err) { return err; } })();";
-      
+        jsToExecute = "(function() { try { " +
+            moreJavascriptToExecute +
+            " window.localStorage.setItem('tempKeys', \'{\"privateKey\": \"${keys["privateKey"]}\", \"publicKey\": \"${keys["publicKey"]}\"}\');  window.localStorage.setItem('state', '$state'); } catch (err) { return err; } })();";
+
         sleep(const Duration(seconds: 1));
 
-        final res = await flutterWebViewPlugins[appId].evalJavascript(jsToExecute);
+        final res =
+            await flutterWebViewPlugins[appId].evalJavascript(jsToExecute);
         final appid = apps[appId]['appid'];
         final redirecturl = apps[appId]['redirecturl'];
         var scope = {};
@@ -1051,7 +1055,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         var jsonData = jsonEncode(encrypted);
         var data = Uri.encodeQueryComponent(jsonData); //Uri.encodeFull();
 
-        loadUrl = 'https://$appid$redirecturl${union}username=${await getDoubleName()}&signedhash=${Uri.encodeQueryComponent(signedHash)}&data=$data';
+        loadUrl =
+            'https://$appid$redirecturl${union}username=${await getDoubleName()}&signedhash=${Uri.encodeQueryComponent(signedHash)}&data=$data';
 
         logger.log("!!!loadUrl: " + loadUrl);
 

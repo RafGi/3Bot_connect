@@ -18,7 +18,7 @@ class RegistrationScreen extends StatefulWidget {
 
 class _ScanScreenState extends State<RegistrationScreen>
     with TickerProviderStateMixin {
-  String helperText = "In order to finish registration, scan QR code";
+  String helperText = "Scan QR code";
   AnimationController sliderAnimationController;
   Animation<double> offset;
   dynamic qrData = '';
@@ -62,7 +62,7 @@ class _ScanScreenState extends State<RegistrationScreen>
                   width: 60.0,
                 ),
                 Text(
-                  'REGISTRATION',
+                  'Searching for QR ...',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
@@ -140,36 +140,25 @@ class _ScanScreenState extends State<RegistrationScreen>
   }
 
   gotQrData(value) async {
+    // Parsing TFT URL.
+    qrData = Uri.parse(value);
+
+    // var type = qrData.scheme;
+    var address = qrData.path;
+    var amount = qrData.queryParameters['amount'];
+    var message = qrData.queryParameters['message'];
+    var sender = qrData.queryParameters['amount'];
+
+    var toInject = "window.vueInstance.injectQrData('$address', $amount, '$message', '$sender');";
+    
+    await flutterWebViewPlugins[1].evalJavascript(toInject);
+
     setState(() {
-      qrData = jsonDecode(value);
+      // Navigator.pushNamed(context, '/');
+      Navigator.of(context).pop();
     });
 
-    var hash = qrData['hash'];
-    var doubleName = qrData['doubleName'];
-    var email = qrData['email'];
-    var phrase = qrData['phrase'];
-
-    Map<String, String> keys = await generateKeysFromSeedPhrase(phrase);
-
-    if (doubleName == null ||
-        email == null ||
-        phrase == null ||
-        keys['privateKey'] == null) {
-      showError();
-    } else {
-      var signedDeviceId = signData(deviceId, keys['privateKey']);
-      sendScannedFlag(hash, await signedDeviceId, doubleName).then((response) {
-        sliderAnimationController.forward();
-        setState(() {
-          helperText = "Choose new pin";
-        });
-      }).catchError((e) {
-        print(e);
-        showError();
-      });
-      updateDeviceId(
-          await messaging.getToken(), doubleName, keys['privateKey']);
-    }
+    await flutterWebViewPlugins[1].show();
   }
 
   showError() {
