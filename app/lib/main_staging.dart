@@ -15,7 +15,29 @@ void main() async {
   init();
 
   apps = [
-    {"disabled": true, 'openInBrowser': false},
+    {
+      "content": Text(
+        'FreeFlowPages',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+        ),
+        textAlign: TextAlign.center,
+      ),
+      "subheading": 'Where privacy and social media co-exist.',
+      "url": 'https://staging.freeflowpages.com/',
+      "bg": 'ffp.jpg',
+      "disabled": false,
+      "initialUrl": 'https://staging.freeflowpages.com/',
+      "visible": false,
+      "id": 0,
+      'cookieUrl':
+          'https://staging.freeflowpages.com/user/auth/external?authclient=3bot',
+      'color': 0xFF708fa0,
+      'errorText': false,
+      'openInBrowser': false,
+      'permissions': [],
+    },
     {
       "content": Text(
         '3bot Wallet',
@@ -38,7 +60,7 @@ void main() async {
       'localStorageKeys': true,
       'color': 0xFF34495e,
       'errorText': false,
-      'openInBrowser': true,
+      'openInBrowser': false,
       'permissions': ['CAMERA']
     },
     {
@@ -83,8 +105,8 @@ void main() async {
       "subheading": 'Chat with your 3Bot',
       "disabled": false,
       'cookieUrl': '',
-      "url": 'https://chatbot.threefold.io?name=*name*&email=*email*',
-      "initialUrl": 'https://chatbot.threefold.io?name=*name*&email=*email*',
+      "url": 'https://go.crisp.chat/chat/embed/?website_id=1a5a5241-91cb-4a41-8323-5ba5ec574da0',
+      "initialUrl": 'https://go.crisp.chat/chat/embed/?website_id=1a5a5241-91cb-4a41-8323-5ba5ec574da0',
       "visible": false,
       "id": 3,
       'color': 0xFF708fa0,

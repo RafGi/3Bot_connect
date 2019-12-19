@@ -29,15 +29,7 @@ class CustomScaffold extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Expanded(
-              child: ClipRRect(
-                borderRadius: this.footer == null
-                    ? BorderRadius.only(
-                        topLeft: Radius.circular(24),
-                        topRight: Radius.circular(24))
-                    : BorderRadius.all(
-                        Radius.circular(24),
-                      ),
-                child: Container(
+              child: Container(
                   color: Theme.of(context).scaffoldBackgroundColor,
                   child: Container(
                     decoration: renderBackground ? BoxDecoration(
@@ -48,7 +40,6 @@ class CustomScaffold extends StatelessWidget {
                     child: body,
                   ),
                 ),
-              ),
             ),
             footer == null
                 ? Container()

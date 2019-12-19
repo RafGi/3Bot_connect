@@ -110,9 +110,8 @@ Future<int> checkVersionNumber(BuildContext context, String version) async {
   var minVersion;
 
   try {
-    minVersion =
-        (await http.get('$threeBotApiUrl/minversion', headers: requestHeaders))
-            .body;
+    minVersion = "1" ; 
+    // (await http.get('$threeBotApiUrl/minversion', headers: requestHeaders)).body;
   } on SocketException catch (error) {
     logger.log("Can't connect to server: " + error.toString());
   }

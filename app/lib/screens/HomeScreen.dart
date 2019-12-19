@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -20,7 +19,6 @@ import 'package:threebotlogin/widgets/BottomNavbar.dart';
 import 'package:threebotlogin/widgets/CustomScaffold.dart';
 import 'package:threebotlogin/widgets/PreferenceWidget.dart';
 import 'package:uni_links/uni_links.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'ErrorScreen.dart';
 import 'RegistrationWithoutScanScreen.dart';
 import 'package:threebotlogin/services/openKYCService.dart';
@@ -42,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   bool openPendingLoginAttempt = true;
   String doubleName = '';
   var email;
-  String initialLink = null;
+  String initialLink;
   int selectedIndex = 0;
   AppBar appBar;
   BottomNavBar bottomNavBar;
@@ -52,14 +50,14 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   int failedApp;
   bool chatViewIsShown = false;
   bool isRegistered = false;
-
   final Set<JavascriptChannel> jsChannels = [
     JavascriptChannel(
         name: 'Print',
         onMessageReceived: (JavascriptMessage message) async {
           dynamic msg = json.decode(message.message);
-
-          switch (msg['type'].toUpperCase()) {
+          String type = msg['type'].toUpperCase();
+          logger.log(type);
+          switch (type) {
             case 'CAMERA':
               await flutterWebViewPlugins[1].hide();
 
@@ -91,7 +89,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   WebViewHttpError webViewError;
 
   final navbarKey = new GlobalKey<BottomNavBarState>();
-  bool showSettings = false;
   bool showPreference = false;
 
   @override
@@ -123,13 +120,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   Future<void> webViewResizer(keyboardUp) async {
     double keyboardSize;
     var size = MediaQuery.of(context).size;
-    print(MediaQuery.of(context).size.height.toString() + " size of screen");
     var appKeyboard = flutterWebViewPlugins[keyboardUsedApp];
     print(appKeyboard);
     print(appKeyboard.webview);
 
     Future.delayed(
-        Duration(milliseconds: 150),
+        Duration(milliseconds: 50),
         () => {
               // Only resize if not on ios..
               if (keyboardUp && !Platform.isIOS)
@@ -138,11 +134,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   flutterWebViewPlugins[keyboardUsedApp].resize(
                       Rect.fromLTWH(
                           0,
-                          appBar.preferredSize.height,
-                          size.width,
-                          size.height -
+                          MediaQuery.of(context).padding.top,
+                          size.width + 2,
+                          size.height +
+                              2 -
                               keyboardSize -
-                              appBar.preferredSize.height),
+                              MediaQuery.of(context).padding.top),
                       instance: appKeyboard.webview),
                   print(keyboardSize.toString() + " size keyboard at opening"),
                   print('inside true keyboard')
@@ -151,8 +148,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 {
                   keyboardSize = MediaQuery.of(context).viewInsets.bottom,
                   flutterWebViewPlugins[keyboardUsedApp].resize(
-                      Rect.fromLTWH(0, appBar.preferredSize.height,
-                          preferredSize.width, preferredSize.height),
+                      Rect.fromLTWH(0, MediaQuery.of(context).padding.top,
+                          preferredSize.width + 2, preferredSize.height + 2),
                       instance: appKeyboard.webview),
                   print(keyboardSize.toString() + " size keyboard at closing"),
                   print('inside false keyboard')
@@ -196,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           barrierDismissible: false,
           builder: (BuildContext context) => CustomDialog(
             image: Icons.check,
-            title: "You're already logged in",
+            title: "You're already registered",
             description: new Text(
                 "We cannot create a new account, you already have an account registered on your device. Please restart the application if this message persists."),
             actions: <Widget>[
@@ -381,7 +378,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     );
 
     return CustomScaffold(
-      renderBackground: selectedIndex != 0,
+      renderBackground: selectedIndex != 0 && selectedIndex != 4,
       appBar: PreferredSize(
         child: appBar,
         preferredSize: Size.fromHeight(0),
@@ -410,6 +407,23 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   void onItemTapped(int index) {
+    setState(() {
+      for (var flutterWebViewPlugin in flutterWebViewPlugins) {
+        if (flutterWebViewPlugin != null) {
+          flutterWebViewPlugin.hide();
+        }
+      }
+      selectedIndex = index;
+    });
+    if (index == 4) {
+      setState(() {
+        showPreference = true;
+      });
+    } else {
+      setState(() {
+        showPreference = false;
+      });
+    }
     if (isLoading) {
       flutterWebViewPlugins[selectedIndex].close();
       flutterWebViewPlugins[selectedIndex] = null;
@@ -417,18 +431,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         isLoading = false;
       });
     }
-
-    setState(() {
-      for (var flutterWebViewPlugin in flutterWebViewPlugins) {
-        if (flutterWebViewPlugin != null) {
-          flutterWebViewPlugin.hide();
-        }
-      }
-      showPreference = false;
-      if (!(apps[index]['openInBrowser'] && Platform.isIOS)) {
-        selectedIndex = index;
-      }
-    });
     updateApp(apps[index]);
   }
 
@@ -454,19 +456,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 SizedBox(height: 50.0),
-                !showPreference
-                    ? FloatingActionButton(
-                        heroTag: "preference",
-                        elevation: 0.0,
-                        backgroundColor: Colors.transparent,
-                        foregroundColor: Theme.of(context).accentColor,
-                        child: Icon(Icons.settings),
-                        onPressed: () {
-                          setState(() {
-                            showPreference = true;
-                          });
-                        })
-                    : null
               ],
             ),
             Column(
@@ -639,10 +628,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             ),
           ],
         );
-      case 2:
-        return Scaffold(
-          backgroundColor: HexColor("#2d4052"),
-        );
       default:
         return isLoading
             ? Center(child: CircularProgressIndicator())
@@ -814,22 +799,17 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   Size getPreferredSizeForWebview() {
     var contextSize = MediaQuery.of(bodyContext).size;
 
-    var preferredHeight = contextSize.height -
-        appBar.preferredSize.height -
+    var preferredHeight = contextSize.height +
+        2 -
+        MediaQuery.of(context).padding.top -
         getBottomNavbarHeight().height;
-    var preferredWidth = contextSize.width;
+    var preferredWidth = contextSize.width + 2;
 
     return new Size(preferredWidth, preferredHeight);
   }
 
   Future<void> updateApp(app) async {
-    if (Platform.isIOS && app['openInBrowser']) {
-      String appid = app['appid'];
-      String redirecturl = app['redirecturl'];
-      launch(
-          'https://$appid$redirecturl#username=${await getDoubleName()}&derivedSeed=${Uri.encodeQueryComponent(await getDerivedSeed(appid))}',
-          forceSafariVC: false);
-    } else if (!app['disabled']) {
+    if (!app['disabled']) {
       final emailVer = await getEmail();
       if (emailVer['verified'] || selectedIndex == 1) {
         if (!app['errorText']) {
@@ -976,8 +956,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         await flutterWebViewPlugins[appId]
             .launch(loadUrl,
                 javascriptChannels: jsChannels,
-                rect: Rect.fromLTWH(
-                    0.0, appBar.preferredSize.height, size.width, size.height),
+                rect: Rect.fromLTWH(0.0, MediaQuery.of(context).padding.top,
+                    size.width + 2, size.height + 2),
                 userAgent: kAndroidUserAgent,
                 hidden: true,
                 cookies: cookieList,
@@ -992,8 +972,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         await flutterWebViewPlugins[appId]
             .launch(loadUrl + '/error',
                 javascriptChannels: jsChannels,
-                rect: Rect.fromLTWH(
-                    0.0, appBar.preferredSize.height, size.width, size.height),
+                rect: Rect.fromLTWH(0.0, MediaQuery.of(context).padding.top,
+                    size.width + 2, size.height + 2),
                 userAgent: kAndroidUserAgent,
                 hidden: true,
                 cookies: [],
@@ -1025,6 +1005,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               "window.localStorage.setItem('importedWallets', JSON.stringify(" +
                   jsonString +
                   "));";
+        } else {
+          moreJavascriptToExecute +=
+              "window.localStorage.setItem('importedWallets', null);";
         }
 
         if (appWallets != null) {
@@ -1067,8 +1050,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         await flutterWebViewPlugins[appId]
             .launch(loadUrl,
                 javascriptChannels: jsChannels,
-                rect: Rect.fromLTWH(
-                    0.0, appBar.preferredSize.height, size.width, size.height),
+                rect: Rect.fromLTWH(0.0, MediaQuery.of(context).padding.top,
+                    size.width + 2, size.height + 2),
                 userAgent: kAndroidUserAgent,
                 hidden: true,
                 cookies: [],

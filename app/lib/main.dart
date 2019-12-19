@@ -29,6 +29,7 @@ int lastAppUsed;
 int keyboardUsedApp;
 bool finger = false;
 Color hexColor = Color(0xff0f296a);
+int selectedIndex = 0;
 
 String appName;
 String packageName;

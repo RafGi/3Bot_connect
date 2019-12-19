@@ -49,13 +49,6 @@ class _PreferenceWidgetState extends State<PreferenceWidget> {
             'Settings',
             style: TextStyle(color: Colors.black),
           ),
-          leading: FlatButton(
-              child: Icon(Icons.arrow_back),
-              onPressed: () {
-                setState(() {
-                  widget.showPreference(false);
-                });
-              }),
         ),
         ListTile(
           title: Text("Profile"),

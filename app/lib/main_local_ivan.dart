@@ -7,18 +7,18 @@ import 'main.dart';
 void main() async {
   var config = Config(
       name: '3bot staging',
-      threeBotApiUrl: 'http://192.168.43.129:5000/api',
-      openKycApiUrl: 'http://192.168.43.129:5005',
+      threeBotApiUrl: 'http://192.168.2.84:5000/api',
+      openKycApiUrl: 'http://192.168.2.84:5005',
       threeBotFrontEndUrl: 'https://login.staging.jimber.org/',
       child: new MyApp());
 
   init();
 
   apps = [
-    {"disabled": true},
+    {"disabled": true, 'openInBrowser': false},
     {
       "content": Text(
-        'NBH Digital Wallet',
+        '3bot Wallet',
         style: TextStyle(
           color: Colors.white,
           fontSize: 20,
@@ -41,7 +41,7 @@ void main() async {
       'openInBrowser': true,
       'permissions': ['CAMERA']
     },
-    {"disabled": true},
+    {"disabled": true, 'openInBrowser': false},
     {
       "content": Text(
         'FreeFlowPages',
@@ -63,9 +63,15 @@ void main() async {
       'color': 0xFF708fa0,
       'errorText': false,
       'openInBrowser': false,
-      'permissions': []
+      'permissions': [],
+      'ffpUrls': [
+        'https://staging.freeflowpages.com/join/tf-tokens',
+        'https://staging.freeflowpages.com/join/tf-grid-users',
+        'https://staging.freeflowpages.com/join/tf-grid-farming',
+        'https://staging.freeflowpages.com/join/freeflownation',
+        'https://staging.freeflowpages.com/join/3bot'
+      ]
     },
-    {"disabled": true},
     {
       "content": Text(
         'ChatApp',
@@ -77,22 +83,18 @@ void main() async {
       ),
       "subheading": 'Chat with your 3Bot',
       "disabled": false,
+      'cookieUrl': '',
       "url": 'https://chatbot.threefold.io?name=*name*&email=*email*',
       "initialUrl": 'https://chatbot.threefold.io?name=*name*&email=*email*',
       "visible": false,
-      "id": 5,
+      "id": 4,
       'color': 0xFF708fa0,
       'errorText': false,
+      'openInBrowser': false,
       'permissions': [],
-      'ffpUrls': [
-        'https://staging.freeflowpages.com/s/tf-tokens',
-        'https://staging.freeflowpages.com/s/tf-grid-users',
-        'https://staging.freeflowpages.com/s/tf-grid-farming',
-        'https://staging.freeflowpages.com/s/freeflownation',
-        'https://staging.freeflowpages.com/s/3bot'
-      ]
     }
   ];
+
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {

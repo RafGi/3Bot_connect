@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:threebotlogin/widgets/CustomDialog.dart';
@@ -58,8 +59,13 @@ class _ScanScreenState extends State<RegistrationScreen>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                SizedBox(
-                  width: 60.0,
+                FloatingActionButton(
+                  tooltip: "What should I do?",
+                  mini: true,
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, '/');
+                  },
+                  child: Icon(Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
                 ),
                 Text(
                   'Searching for QR ...',
@@ -69,13 +75,8 @@ class _ScanScreenState extends State<RegistrationScreen>
                       fontWeight: FontWeight.bold,
                       fontSize: 21.0),
                 ),
-                FloatingActionButton(
-                  tooltip: "What should I do?",
-                  mini: true,
-                  onPressed: () {
-                    _showInformation();
-                  },
-                  child: Icon(Icons.help_outline),
+                SizedBox(
+                  width: 60.0,
                 ),
               ],
             ),
