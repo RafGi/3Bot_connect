@@ -115,6 +115,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     onActivate(true);
     _homeScreenInstance = this;
+
+ 
+
   }
 
   Future<void> webViewResizer(keyboardUp) async {
@@ -645,7 +648,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   void openFfp(int urlIndex) async {
-    var ffpInstance = flutterWebViewPlugins[3];
+    var ffpIndex = 2;
+    var ffpInstance = flutterWebViewPlugins[ffpIndex];
     bool hadToStartInstance = false;
     bool callbackSuccess = false;
 
@@ -656,12 +660,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           flutterWebViewPlugin.dispose();
         }
       }
-      selectedIndex = 3;
+      selectedIndex = ffpIndex;
     });
 
     if (ffpInstance == null) {
-      await updateApp(apps[3]);
-      ffpInstance = flutterWebViewPlugins[3];
+      await updateApp(apps[ffpIndex]);
+      ffpInstance = flutterWebViewPlugins[ffpIndex];
       hadToStartInstance = true;
     }
 
@@ -670,13 +674,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         ffpInstance.onStateChanged.listen((viewData) async {
           if (viewData.type == WebViewState.finishLoad && !callbackSuccess) {
             await ffpInstance.evalJavascript("window.location.href = \"" +
-                apps[3]['ffpUrls'][urlIndex] +
+                apps[ffpIndex]['ffpUrls'][urlIndex] +
                 "\"");
             callbackSuccess = true;
           }
         });
       } else {
-        var url = apps[3]['ffpUrls'][urlIndex];
+        var url = apps[ffpIndex]['ffpUrls'][urlIndex];
 
         await ffpInstance.reloadUrl(url);
         return ffpInstance.show();
