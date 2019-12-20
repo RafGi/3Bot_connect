@@ -425,8 +425,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       });
     }
     if (isLoading) {
-      flutterWebViewPlugins[selectedIndex].close();
-      flutterWebViewPlugins[selectedIndex] = null;
+      if (flutterWebViewPlugins[selectedIndex] != null) {
+        flutterWebViewPlugins[selectedIndex].close();
+        flutterWebViewPlugins[selectedIndex] = null;
+      }
       setState(() {
         isLoading = false;
       });

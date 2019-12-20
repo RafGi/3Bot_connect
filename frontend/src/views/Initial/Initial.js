@@ -18,7 +18,7 @@ export default {
       nameRegex: new RegExp(/^(\w+)$/),
       nameRules: [
         v => !!v || 'Name is required',
-        v => this.nameRegex.test(v) || 'Name can only contain alphanumeric characters.',
+        v => this.nameRegex.test(v) || 'Name can only contain letters and numbers (no spaces or special symbols).',
         v => v.length <= 50 || 'Name must be less than 50 characters.'
       ],
       continueToLogin: false,
@@ -147,9 +147,7 @@ export default {
       }
     },
     register () {
-      this.$router.push({
-        name: 'register'
-      })
+
     },
     checkNameAvailability () {
       this.clearCheckStatus()

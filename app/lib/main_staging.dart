@@ -15,29 +15,7 @@ void main() async {
   init();
 
   apps = [
-    {
-      "content": Text(
-        'FreeFlowPages',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 20,
-        ),
-        textAlign: TextAlign.center,
-      ),
-      "subheading": 'Where privacy and social media co-exist.',
-      "url": 'https://staging.freeflowpages.com/',
-      "bg": 'ffp.jpg',
-      "disabled": false,
-      "initialUrl": 'https://staging.freeflowpages.com/',
-      "visible": false,
-      "id": 0,
-      'cookieUrl':
-          'https://staging.freeflowpages.com/user/auth/external?authclient=3bot',
-      'color': 0xFF708fa0,
-      'errorText': false,
-      'openInBrowser': false,
-      'permissions': [],
-    },
+    null,
     {
       "content": Text(
         '3bot Wallet',
