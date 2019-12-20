@@ -18,7 +18,7 @@ void main() {
     null,
     {
       "content": Text(
-        'NBH Digital Wallet',
+        '3bot Wallet',
         style: TextStyle(
           color: Colors.white,
           fontSize: 20,
@@ -41,7 +41,6 @@ void main() {
       'openInBrowser': true,
       'permissions': ['CAMERA']
     },
-    {"disabled": true, 'openInBrowser': false},
     {
       "content": Text(
         'FreeFlowPages',
@@ -52,10 +51,10 @@ void main() {
         textAlign: TextAlign.center,
       ),
       "subheading": 'Where privacy and social media co-exist.',
-      "url": 'https://freeflowpages.com/',
+      "url": 'https://freeflowpages.com?crisp=false',
       "bg": 'ffp.jpg',
       "disabled": false,
-      "initialUrl": 'https://freeflowpages.com/',
+      "initialUrl": 'https://freeflowpages.com?crisp=false',
       "visible": false,
       "id": 3,
       'cookieUrl':
@@ -65,11 +64,11 @@ void main() {
       'openInBrowser': false,
       'permissions': [],
       'ffpUrls': [
-        'https://freeflowpages.com/join/tf-tokens',
-        'https://freeflowpages.com/join/tf-grid-users',
-        'https://freeflowpages.com/join/tf-grid-farming',
-        'https://freeflowpages.com/join/freeflownation',
-        'https://freeflowpages.com/join/3bot'
+        'https://freeflowpages.com/join/tf-tokens?crisp=false',
+        'https://freeflowpages.com/join/tf-grid-users?crisp=false',
+        'https://freeflowpages.com/join/tf-grid-farming?crisp=false',
+        'https://freeflowpages.com/join/freeflownation?crisp=false',
+        'https://freeflowpages.com/join/3bot?crisp=false'
       ]
     },
     {
@@ -84,10 +83,10 @@ void main() {
       "subheading": 'Chat with your 3Bot',
       "disabled": false,
       'cookieUrl': '',
-      "url": 'https://chatbot.threefold.io?name=*name*&email=*email*',
-      "initialUrl": 'https://chatbot.threefold.io?name=*name*&email=*email*',
+      "url": 'https://go.crisp.chat/chat/embed/?website_id=1a5a5241-91cb-4a41-8323-5ba5ec574da0',
+      "initialUrl": 'https://go.crisp.chat/chat/embed/?website_id=1a5a5241-91cb-4a41-8323-5ba5ec574da0',
       "visible": false,
-      "id": 4,
+      "id": 3,
       'color': 0xFF708fa0,
       'errorText': false,
       'openInBrowser': false,
@@ -96,7 +95,7 @@ void main() {
     null,
     {
       "content": Text(
-        'ChatApp',
+        'Wizard',
         style: TextStyle(
           color: Colors.white,
           fontSize: 20,

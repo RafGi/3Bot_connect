@@ -95,7 +95,7 @@ void main() async {
     null,
     {
       "content": Text(
-        'ChatApp',
+        'Wizard',
         style: TextStyle(
           color: Colors.white,
           fontSize: 20,
