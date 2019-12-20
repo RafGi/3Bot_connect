@@ -93,6 +93,7 @@ void main() {
       'openInBrowser': false,
       'permissions': [],
     },
+    null,
     {
       "content": Text(
         'ChatApp',
