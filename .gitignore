@@ -314,3 +314,6 @@ example/public/config.js
 
 openkyc/*
 Makefile
+.DS_Store
+app/.flutter-plugins-dependencies
+app/.gradle/
