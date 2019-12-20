@@ -316,4 +316,6 @@ openkyc/*
 Makefile
 .DS_Store
 app/.flutter-plugins-dependencies
-app/.gradle/
+app/local.properties
+app/.gradle/4.10.1/fileHashes/fileHashes.bin
+app/.gradle/4.10.1/fileHashes/fileHashes.lock

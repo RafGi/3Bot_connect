@@ -223,6 +223,18 @@ Future<String> getScopePermissions() async {
   return prefs.getString('scopePermissions');
 }
 
+Future<void> setwizardSeen() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.setBool('wizardSeen', true);
+}
+
+Future<bool> getwizardSeenStatus() async {
+  final prefs = await SharedPreferences.getInstance();
+  bool hasSeen = prefs.getBool('wizardSeen');
+  if (hasSeen == null) hasSeen = false;
+  return hasSeen;
+}
+
 Future<bool> clearData() async {
   final prefs = await SharedPreferences.getInstance();
   Response response;

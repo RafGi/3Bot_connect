@@ -91,7 +91,28 @@ void main() async {
       'errorText': false,
       'openInBrowser': false,
       'permissions': [],
-    }
+    },
+    {
+      "content": Text(
+        'ChatApp',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+        ),
+        textAlign: TextAlign.center,
+      ),
+      "subheading": 'Chat with your 3Bot',
+      "disabled": false,
+      'cookieUrl': '',
+      "url": 'https://jimber.org/wizard',
+      "initialUrl": 'https://jimber.org/wizard',
+      "visible": false,
+      'color': 0xFF708fa0,
+      'errorText': false,
+      'openInBrowser': false,
+      "id": 4,
+      'permissions': []
+    },
   ];
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])

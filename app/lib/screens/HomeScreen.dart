@@ -76,9 +76,15 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
             case 'COPY':
               break;
+
             case 'OTHER':
               break;
-            case 'ADD_APP_WALLET':
+
+            case 'CLOSE_INIT':
+              setwizardSeen();
+              flutterWebViewPlugins[4].close();
+              break;
+
             default:
               break;
           }
@@ -115,9 +121,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     onActivate(true);
     _homeScreenInstance = this;
-
- 
-
   }
 
   Future<void> webViewResizer(keyboardUp) async {
@@ -380,6 +383,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       onItemTapped: onItemTapped,
     );
 
+    // Check if has alreade seen wizard
+    if (flutterWebViewPlugins[4] == null) {
+      print("=====");
+      getwizardSeenStatus().then((hasSeen) {
+        // if not, open
+        if (!hasSeen) {
+          Size theSize = new Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top);
+
+          launchApp(theSize, 4);
+        }
+      });
+    }
+
     return CustomScaffold(
       renderBackground: selectedIndex != 0 && selectedIndex != 4,
       appBar: PreferredSize(
@@ -447,7 +463,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   Widget registered(BuildContext context) {
     bodyContext = context;
-
+    
     if (showPreference) {
       return PreferenceWidget(updatePreference);
     }
@@ -952,7 +968,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         var jsonData = jsonEncode(
             (await encrypt(jsonEncode(scopeData), publickey, privateKey)));
         var data = Uri.encodeQueryComponent(jsonData); //Uri.encodeFull();
-        // TODO add email if crisp url
         loadUrl =
             'https://$appName$redirecturl${union}username=${await getDoubleName()}&signedhash=${Uri.encodeComponent(await signedHash)}&data=$data';
 
@@ -1053,10 +1068,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
         logger.log("Launching App" + [appId].toString());
       } else {
-
         if (loadUrl.contains('go.crisp.chat')) {
           var email = await getEmail();
-          loadUrl+="&user_email=${email['email']}";
+          loadUrl += "&user_email=${email['email']}";
         }
 
         await flutterWebViewPlugins[appId]
