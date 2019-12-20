@@ -86,7 +86,7 @@ Turn your imagination into a reality..
           </v-row>
           <v-row class="ma-3 mt-5" justify="center">
             <div class="text-center mt-5" >
-                <v-btn color="primary" onclick="window.Post('CLOSE_INIT')" >Get started!</v-btn>
+                <v-btn color="primary" onclick="let closemsg = { type: 'CLOSE_INIT' }; window.Print.postMessage(JSON.stringify(closemsg))" >Get started!</v-btn>
             </div>
           </v-row>
         </v-sheet>
