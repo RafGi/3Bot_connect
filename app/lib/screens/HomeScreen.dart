@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               break;
             case 'OTHER':
               break;
-
+            case 'ADD_APP_WALLET':
             default:
               break;
           }
@@ -484,7 +484,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0),
                       child: Text(
-                        "Bot",
+                        "Bot Connect",
                         style: TextStyle(
                             fontSize: 40, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
@@ -949,6 +949,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         var jsonData = jsonEncode(
             (await encrypt(jsonEncode(scopeData), publickey, privateKey)));
         var data = Uri.encodeQueryComponent(jsonData); //Uri.encodeFull();
+        // TODO add email if crisp url
         loadUrl =
             'https://$appName$redirecturl${union}username=${await getDoubleName()}&signedhash=${Uri.encodeComponent(await signedHash)}&data=$data';
 
@@ -1049,6 +1050,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
         logger.log("Launching App" + [appId].toString());
       } else {
+
+        if (loadUrl.contains('go.crisp.chat')) {
+          var email = await getEmail();
+          loadUrl+="&user_email=${email['email']}";
+        }
+
         await flutterWebViewPlugins[appId]
             .launch(loadUrl,
                 javascriptChannels: jsChannels,
