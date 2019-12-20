@@ -17,8 +17,7 @@ require.config({
     // 'vue': 'https://cdn.jsdelivr.net/npm/vue',
     'vuex': 'https://cdnjs.cloudflare.com/ajax/libs/vuex/3.0.1/vuex.min',
     'vue-router': 'https://cdnjs.cloudflare.com/ajax/libs/vue-router/3.0.2/vue-router.min',
-    'http-vue-loader': '../magic/httpVueLoader',
-    'sassjs': '../magic/sass/sass.min'
+    'http-vue-loader': '../magic/httpVueLoader'
   }
 })
 require(['babel!../src/main'])

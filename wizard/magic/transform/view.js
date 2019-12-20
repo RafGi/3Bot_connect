@@ -1,4 +1,4 @@
-define(['babel-standalone', 'http-vue-loader', 'sassjs'], function (Babel, httpVueLoader, Sass) {
+define(['babel-standalone', 'http-vue-loader'], function (Babel, httpVueLoader) {
   httpVueLoader.scriptExportsHandler = function (script) {
     return new Promise(function (resolve) {
       require([ this.component.name ], function (component) {
@@ -19,15 +19,7 @@ define(['babel-standalone', 'http-vue-loader', 'sassjs'], function (Babel, httpV
       ]
     }).code
   }
-  httpVueLoader.langProcessor.scss = function (scssText) {
-    Sass.setWorkerUrl('magic/sass/sass.worker.js')
-    var sass = new Sass()
-    return new Promise(function (resolve, reject) {
-      sass.compile(scssText, function (result) {
-        if (result.status === 0) { resolve(result.text) } else { reject(result) }
-      })
-    })
-  }
+
 
   return {
     load: function (name, req, onload, config) {
