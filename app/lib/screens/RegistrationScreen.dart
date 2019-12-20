@@ -12,7 +12,7 @@ import 'package:threebotlogin/widgets/Scanner.dart';
 
 class RegistrationScreen extends StatefulWidget {
   final Widget registrationScreen;
-  
+
   RegistrationScreen({Key key, this.registrationScreen}) : super(key: key);
   _ScanScreenState createState() => _ScanScreenState();
 }
@@ -63,9 +63,12 @@ class _ScanScreenState extends State<RegistrationScreen>
                   tooltip: "What should I do?",
                   mini: true,
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/');
+                    //Navigator.pushReplacementNamed(context, '/');
+                    Navigator.pop(context);
+                    flutterWebViewPlugins[1].show();
                   },
-                  child: Icon(Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
+                  child: Icon(
+                      Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
                 ),
                 Text(
                   'Searching for QR ...',
@@ -124,20 +127,27 @@ class _ScanScreenState extends State<RegistrationScreen>
     );
   }
 
+  Future<bool> _onWillPop() async {
+    flutterWebViewPlugins[1].show();
+    return Future.value(true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      body: Stack(
-        children: [
-          Scanner(
-            callback: (qr) => gotQrData(qr),
-            context: context,
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: new Scaffold(
+          key: _scaffoldKey,
+          body: Stack(
+            children: [
+              Scanner(
+                callback: (qr) => gotQrData(qr),
+                context: context,
+              ),
+              Align(alignment: Alignment.bottomCenter, child: content()),
+            ],
           ),
-          Align(alignment: Alignment.bottomCenter, child: content()),
-        ],
-      ),
-    );
+        ));
   }
 
   gotQrData(value) async {
@@ -150,13 +160,14 @@ class _ScanScreenState extends State<RegistrationScreen>
     var message = qrData.queryParameters['message'];
     var sender = qrData.queryParameters['amount'];
 
-    var toInject = "window.vueInstance.injectQrData('$address', $amount, '$message', '$sender');";
-    
+    var toInject =
+        "window.vueInstance.injectQrData('$address', $amount, '$message', '$sender');";
+
     await flutterWebViewPlugins[1].evalJavascript(toInject);
 
     setState(() {
       // Navigator.pushNamed(context, '/');
-      Navigator.of(context).pop();
+    //  Navigator.of(context).pop();
     });
 
     await flutterWebViewPlugins[1].show();

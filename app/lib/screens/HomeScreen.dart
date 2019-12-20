@@ -234,7 +234,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             logger.log("Found a login attempt, opening ...");
 
             // Navigator.popUntil(context, ModalRoute.withName('/'));
-
+            for (var flutterWebViewPlugin in flutterWebViewPlugins) {
+              if (flutterWebViewPlugin != null) {
+                flutterWebViewPlugin.hide();
+              }
+            }
             Navigator.popUntil(context, (route) {
               if (route.settings.name == "/" ||
                   route.settings.name == "/registered" ||
@@ -392,7 +396,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         initStarted = true;
         // if not, open
         if (!hasSeen) {
-          Size theSize = new Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top);
+          Size theSize = new Size(
+              MediaQuery.of(context).size.width,
+              MediaQuery.of(context).size.height -
+                  MediaQuery.of(context).padding.top);
 
           launchApp(theSize, 5);
         }
@@ -429,6 +436,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   void onItemTapped(int index) {
+    if (selectedIndex == index) {
+      return;
+    }
     setState(() {
       for (var flutterWebViewPlugin in flutterWebViewPlugins) {
         if (flutterWebViewPlugin != null) {
@@ -466,7 +476,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   Widget registered(BuildContext context) {
     bodyContext = context;
-    
+
     if (showPreference) {
       return PreferenceWidget(updatePreference);
     }
@@ -834,7 +844,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Future<void> updateApp(app) async {
-
     if (!app['disabled']) {
       final emailVer = await getEmail();
       if (emailVer['verified'] || selectedIndex == 1) {
