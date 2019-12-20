@@ -306,8 +306,6 @@ class _PreferenceWidgetState extends State<PreferenceWidget> {
                           ],
                         ));
               }
-
-              setState(() {});
             },
           ),
         ],

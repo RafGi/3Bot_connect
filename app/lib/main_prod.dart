@@ -6,7 +6,7 @@ import 'main.dart';
 
 void main() {
   var config = Config(
-      name: '3Bot connect',
+      name: '3Bot Connect',
       threeBotApiUrl: 'https://login.threefold.me/api',
       openKycApiUrl: 'https://openkyc.live/',
       threeBotFrontEndUrl: 'https://login.threefold.me/',

@@ -436,7 +436,7 @@ class _MobileRegistrationScreenState extends State<MobileRegistrationScreen> {
   Widget build(BuildContext context) {
     return CustomScaffold(
       appBar: AppBar(
-        title: Text('3Bot connect - Registration'),
+        title: Text('3Bot Connect - Registration'),
       ),
       body:  registrationStepper(),
     );

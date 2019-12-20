@@ -12,7 +12,7 @@ class CustomScaffold extends StatelessWidget {
   const CustomScaffold(
       {Key key,
       @required this.body,
-      this.title = '3Bot connect',
+      this.title = '3Bot Connect',
       this.bottom,
       this.footer,
       this.padding = 0.0,
