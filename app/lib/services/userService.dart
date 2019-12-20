@@ -90,9 +90,15 @@ Future<void> saveAppWallet(String appWallet) async {
   final prefs = await SharedPreferences.getInstance();
   List<String> appWallets = await getAppWallets();
 
+  if(appWallet == null) {
+    await prefs.remove('appWallets');
+    await prefs.setStringList('appWallets', []);
+    return;
+  }
+
   if (appWallets == null) {
     appWallets = new List<String>();
-  }
+  } 
 
   if (!appWallets.contains(appWallet)) {
     appWallets.add(appWallet);
@@ -104,8 +110,8 @@ Future<void> saveAppWallet(String appWallet) async {
 
 Future<List<String>> getAppWallets() async {
   final prefs = await SharedPreferences.getInstance();
-
-  return prefs.getStringList("appWallets");
+  var wallets = prefs.getStringList("appWallets");
+  return wallets;
 }
 
 Future<void> saveImportedWallet(String importedWallet) async {

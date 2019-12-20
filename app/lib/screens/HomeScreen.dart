@@ -1040,6 +1040,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               "window.localStorage.setItem('appWallets', JSON.stringify(" +
                   jsonString +
                   "));";
+        } else {
+          moreJavascriptToExecute +=
+              "window.localStorage.setItem('appWallets', null);";
         }
 
         jsToExecute = "(function() { try { " +
