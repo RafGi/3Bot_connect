@@ -11,16 +11,8 @@ class SuccessfulScreen extends StatefulWidget {
 }
 
 Future<bool> _onWillPop() {
-  var index = 0;
-
-  for (var flutterWebViewPlugin in flutterWebViewPlugins) {
-    if (flutterWebViewPlugin != null) {
-      if (index == lastAppUsed) {
-        flutterWebViewPlugin.show();
-        showButton = true;
-      }
-      index++;
-    }
+  if (flutterWebViewPlugins[lastAppUsed] != null) {
+    flutterWebViewPlugins[lastAppUsed].show();
   }
   return Future.value(true);
 }
