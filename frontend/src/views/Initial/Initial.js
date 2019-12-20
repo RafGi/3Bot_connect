@@ -147,7 +147,9 @@ export default {
       }
     },
     register () {
-
+      this.$router.push({
+        name: 'register'
+      })
     },
     checkNameAvailability () {
       this.clearCheckStatus()

@@ -3,13 +3,13 @@
   </v-progress-linear>
   <v-layout justify-center v-if="!spinner">
     <v-flex md8>
-      <v-card>
+      <v-card v-if="hasAppid()" >
         <v-toolbar class="primary">
           <h1 class="headline white--text text-xs-center fw">
             Identify yourself
           </h1>
         </v-toolbar>
-        <v-form v-model="valid" @submit.prevent="registerOrLogin">
+        <v-form v-model="valid" @submit.prevent="registerOrLogin" >
           <v-card-text>
             <v-stepper v-if="firstvisit" class="elevation-0" flat>
               <v-stepper-header class="elevation-0">
@@ -41,24 +41,29 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <p v-if="!nameCheckStatus.checking && valid && actionBtnDisabled() || !doubleName" class="pr-1">
-              {{nameCheckStatus.available ? "" :  "This account already exists "}}
-              <p v-else class="pr-1"> This account already exists · You've got to come from an app to sign in.
-                <v-tooltip bottom>
-                  <a slot="activator" v-if="!nameCheckStatus.available && valid && actionBtnDisabled()" class="pr-3"
-                    @click="$router.push('recover')"> · recover</a>
-                  <span>Is this your account? Click for more information on how to recover your account.</span>
+            <p   v-if="(nameCheckStatus.checked && !nameCheckStatus.checking && !nameCheckStatus.available && doubleName != '')" class="pr-1">
+                <span >This account exists</span>  
+              <v-tooltip bottom>
+                  <a href="#" slot="activator" @click="$router.push('recover')"> · recover </a>
+                  <span> Is this your account? Click for more information on how to recover your account.</span> 
+                 
                 </v-tooltip>
-              </p>
-              <!-- <v-btn v-if="!nameCheckStatus.available" icon outline @click.stop="dialog = true">?</v-btn> -->
-              <!-- <v-btn type="submit" flat :disabled="!(nameCheckStatus.checked && !nameCheckStatus.checking && valid)">{{nameCheckStatus.available ? "Register" :  "Sign in"}}</v-btn> -->
-              <v-btn type="submit" flat :disabled="!(nameCheckStatus.checked && !nameCheckStatus.checking && valid)"
-                v-if="!nameCheckStatus.available && actionBtnDisabled()">{{nameCheckStatus.available ? "Register" :  "Sign in"}}</v-btn>
+            </p>
+              <v-btn type="submit" flat :disabled="!(nameCheckStatus.checked && !nameCheckStatus.checking && !nameCheckStatus.available)">{{"Sign in"}}</v-btn>
           </v-card-actions>
         </v-form>
 
-        <v-card-text v-if="!nameCheckStatus.checking && valid && actionBtnDisabled()" class="subheading pt-3" >This account doesn't exist yet. Please register using the mobile app! If you don't have the app, you can download by clicking below.</v-card-text>
+        <v-card-text v-if="!(nameCheckStatus.checked && !nameCheckStatus.checking && !nameCheckStatus.available)" class="subheading pt-3" >This account doesn't exist yet. Please register using the mobile app! If you don't have the app, you can download by clicking below.</v-card-text>
         <v-card-text v-else class="subheading pt-3" >You can login using the 3bot app. Download this app on the Google Play/ Apple app store.</v-card-text>
+      </v-card>
+
+      <v-card v-else="hasAppid()" >
+          <v-toolbar class="primary">
+              <h1 class="headline white--text text-xs-center fw">
+                3bot login
+              </h1>
+            </v-toolbar>
+          <v-card-text> You can login by browsing to a third party app which supports 3bot login.</v-card-text>
       </v-card>
     </v-flex>
   </v-layout>
