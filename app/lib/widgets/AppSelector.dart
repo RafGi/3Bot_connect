@@ -274,7 +274,6 @@ class _AppSelectorState extends State<AppSelector> {
             }
 
             widget.notifyParent(app['color']);
-            showButton = true;
             lastAppUsed = app['id'];
             keyboardUsedApp = app['id'];
             print("keyboardapp open: " + keyboardUsedApp.toString());

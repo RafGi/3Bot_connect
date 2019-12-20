@@ -831,6 +831,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Future<void> updateApp(app) async {
+    print("App update: " + app['id'].toString());
     if (!app['disabled']) {
       final emailVer = await getEmail();
       if (emailVer['verified'] || selectedIndex == 1) {
@@ -846,8 +847,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             await launchApp(preferredSize, app['id']);
             await prefs.setBool('firstvalidation', true);
           }
-
-          showButton = true;
           lastAppUsed = app['id'];
           keyboardUsedApp = app['id'];
           print("keyboardapp open: " + keyboardUsedApp.toString());

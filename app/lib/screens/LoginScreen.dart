@@ -30,16 +30,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 Future<bool> _onWillPop() async {
-  var index = 0;
   cancelLogin(await getDoubleName());
-  for (var flutterWebViewPlugin in flutterWebViewPlugins) {
-    if (flutterWebViewPlugin != null) {
-      if (index == lastAppUsed) {
-        flutterWebViewPlugin.show();
-        showButton = true;
-      }
-      index++;
-    }
+  if (flutterWebViewPlugins[lastAppUsed] != null) {
+    flutterWebViewPlugins[lastAppUsed].show();
   }
   return Future.value(true);
 }
@@ -395,16 +388,9 @@ class _LoginScreenState extends State<LoginScreen> {
   cancelIt() async {
     cancelLogin(await getDoubleName());
     Navigator.popUntil(context, ModalRoute.withName('/'));
-    var index = 0;
 
-    for (var flutterWebViewPlugin in flutterWebViewPlugins) {
-      if (flutterWebViewPlugin != null) {
-        if (index == lastAppUsed) {
-          flutterWebViewPlugin.show();
-          showButton = true;
-        }
-        index++;
-      }
+    if (flutterWebViewPlugins[lastAppUsed] != null) {
+      flutterWebViewPlugins[lastAppUsed].show();
     }
   }
 
@@ -453,16 +439,17 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   dynamic buildScope() async {
-    Map tmpScope  = new Map.from(scope);
+    Map tmpScope = new Map.from(scope);
 
     var json = jsonDecode(await getScopePermissions());
-    var permissions = json[widget.message['appId']]; // scope['derivedSeed']['appId']
+    var permissions =
+        json[widget.message['appId']]; // scope['derivedSeed']['appId']
     var keysOfPermissions = permissions.keys.toList();
 
     print("====================");
     print(tmpScope);
     print(permissions);
-    print(keysOfPermissions); 
+    print(keysOfPermissions);
     print("--------------------");
 
     keysOfPermissions.forEach((var value) {

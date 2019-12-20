@@ -23,7 +23,6 @@ String pk;
 String deviceId;
 Config config;
 LoggingService logger;
-bool showButton;
 List<FlutterWebviewPlugin> flutterWebViewPlugins = new List(6);
 int lastAppUsed;
 int keyboardUsedApp;
@@ -89,7 +88,6 @@ void init() async {
   });
 
   logger = new LoggingService();
-  showButton = false;
 
   pk = await getPrivateKey();
 
