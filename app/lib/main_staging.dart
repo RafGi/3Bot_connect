@@ -51,10 +51,10 @@ void main() async {
         textAlign: TextAlign.center,
       ),
       "subheading": 'Where privacy and social media co-exist.',
-      "url": 'https://staging.freeflowpages.com/',
+      "url": 'https://staging.freeflowpages.com?crisp=false',
       "bg": 'ffp.jpg',
       "disabled": false,
-      "initialUrl": 'https://staging.freeflowpages.com/',
+      "initialUrl": 'https://staging.freeflowpages.com?crisp=false',
       "visible": false,
       "id": 2,
       'cookieUrl':
@@ -64,11 +64,11 @@ void main() async {
       'openInBrowser': false,
       'permissions': [],
       'ffpUrls': [
-        'https://staging.freeflowpages.com/join/tf-tokens',
-        'https://staging.freeflowpages.com/join/tf-grid-users',
-        'https://staging.freeflowpages.com/join/tf-grid-farming',
-        'https://staging.freeflowpages.com/join/freeflownation',
-        'https://staging.freeflowpages.com/join/3bot'
+        'https://staging.freeflowpages.com/join/tf-tokens?crisp=false',
+        'https://staging.freeflowpages.com/join/tf-grid-users?crisp=false',
+        'https://staging.freeflowpages.com/join/tf-grid-farming?crisp=false',
+        'https://staging.freeflowpages.com/join/freeflownation?crisp=false',
+        'https://staging.freeflowpages.com/join/3bot?crisp=false'
       ]
     },
     {

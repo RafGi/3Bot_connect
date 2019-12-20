@@ -19,7 +19,7 @@ void initFirebaseMessagingListener(context) async {
       openLogin(context, message);
     },
     onLaunch: (Map<String, dynamic> message) async {
-      logger.log('On launch $message'); 
+      logger.log('On launch $message');
       openLogin(context, message);
     },
     onResume: (Map<String, dynamic> message) async {
@@ -61,7 +61,7 @@ Future openLogin(context, message) async {
       var scope = {};
       var dataToSend;
 
-      // Dead code ? 
+      // Dead code ?
 
       if (data['scope'] != null) {
         if (data['scope'].split(",").contains('user:email')) {
@@ -73,7 +73,6 @@ Future openLogin(context, message) async {
         }
       }
 
-      
       if (scope.isNotEmpty) {
         logger.log(scope.isEmpty);
         dataToSend =
@@ -84,58 +83,69 @@ Future openLogin(context, message) async {
   } else {
     logger.log(data['type']);
     if (data['type'] == 'login' && data['mobile'] != 'true') {
+      for (var flutterWebViewPlugin in flutterWebViewPlugins) {
+        if (flutterWebViewPlugin != null) {
+          flutterWebViewPlugin.hide();
+        }
+      }
       Navigator.popUntil(context, ModalRoute.withName('/'));
+
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => LoginScreen(data)));
-          for (var flutterWebViewPlugin in flutterWebViewPlugins) {
-            if (flutterWebViewPlugin != null) {
-              flutterWebViewPlugin.hide();
-            }
-          }
-          
     } else if (data['type'] == 'email_verification') {
       getEmail().then((email) async {
-        if (email['email'] != null && (await getSignedEmailIdentifier()) == null) {
+        if (email['email'] != null &&
+            (await getSignedEmailIdentifier()) == null) {
           var tmpDoubleName = (await getDoubleName()).toLowerCase();
 
-          getSignedEmailIdentifierFromOpenKYC(tmpDoubleName).then((response) async {
+          getSignedEmailIdentifierFromOpenKYC(tmpDoubleName)
+              .then((response) async {
             var body = jsonDecode(response.body);
 
             var signedEmailIdentifier = body["signed_email_identifier"];
 
-            if(signedEmailIdentifier != null && signedEmailIdentifier.isNotEmpty) {
-              logger.log("Received signedEmailIdentifier: " + signedEmailIdentifier);
+            if (signedEmailIdentifier != null &&
+                signedEmailIdentifier.isNotEmpty) {
+              logger.log(
+                  "Received signedEmailIdentifier: " + signedEmailIdentifier);
 
-              var vsei = json.decode((await verifySignedEmailIdentifier(signedEmailIdentifier)).body);
+              var vsei = json.decode(
+                  (await verifySignedEmailIdentifier(signedEmailIdentifier))
+                      .body);
 
-              if(vsei != null && vsei["email"] == email["email"] && vsei["identifier"] == tmpDoubleName) {
-                logger.log("Verified signedEmailIdentifier authenticity, saving data.");
+              if (vsei != null &&
+                  vsei["email"] == email["email"] &&
+                  vsei["identifier"] == tmpDoubleName) {
+                logger.log(
+                    "Verified signedEmailIdentifier authenticity, saving data.");
                 await saveEmail(vsei["email"], true);
                 await saveSignedEmailIdentifier(signedEmailIdentifier);
 
                 showDialog(
                   context: context,
                   builder: (BuildContext context) => CustomDialog(
-                        image: Icons.email,
-                        title: "Email verified",
-                        description: new Text("Your email has been verfied!"),
-                        actions: <Widget>[
-                          FlatButton(
-                            child: new Text("Ok"),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ],
+                    image: Icons.email,
+                    title: "Email verified",
+                    description: new Text("Your email has been verfied!"),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: new Text("Ok"),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                       ),
+                    ],
+                  ),
                 );
               } else {
-                logger.log("Couldn't verify authenticity, saving unverified email.");
+                logger.log(
+                    "Couldn't verify authenticity, saving unverified email.");
                 await saveEmail(email["email"], false);
                 await removeSignedEmailIdentifier();
               }
             } else {
-              logger.log("No valid signed email has been found, please redo the verification process.");
+              logger.log(
+                  "No valid signed email has been found, please redo the verification process.");
             }
           });
         }

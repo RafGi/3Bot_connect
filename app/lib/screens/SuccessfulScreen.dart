@@ -11,7 +11,7 @@ class SuccessfulScreen extends StatefulWidget {
 }
 
 Future<bool> _onWillPop() {
-  if (flutterWebViewPlugins[lastAppUsed] != null) {
+  if (lastAppUsed != null && flutterWebViewPlugins[lastAppUsed] != null) {
     flutterWebViewPlugins[lastAppUsed].show();
   }
   return Future.value(true);

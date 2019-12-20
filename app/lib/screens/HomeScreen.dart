@@ -42,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   var email;
   String initialLink;
   int selectedIndex = 0;
+  bool initStarted = false;
   AppBar appBar;
   BottomNavBar bottomNavBar;
   BuildContext bodyContext;
@@ -82,7 +83,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
             case 'CLOSE_INIT':
               setwizardSeen();
-              flutterWebViewPlugins[4].close();
+              flutterWebViewPlugins[5].close();
+              flutterWebViewPlugins[5] = null;
               break;
 
             default:
@@ -384,14 +386,15 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     );
 
     // Check if has alreade seen wizard
-    if (flutterWebViewPlugins[4] == null) {
+    if (flutterWebViewPlugins[4] == null && !initStarted) {
       print("=====");
       getwizardSeenStatus().then((hasSeen) {
+        initStarted = true;
         // if not, open
         if (!hasSeen) {
           Size theSize = new Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top);
 
-          launchApp(theSize, 4);
+          launchApp(theSize, 5);
         }
       });
     }
@@ -831,7 +834,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Future<void> updateApp(app) async {
-    print("App update: " + app['id'].toString());
+
     if (!app['disabled']) {
       final emailVer = await getEmail();
       if (emailVer['verified'] || selectedIndex == 1) {

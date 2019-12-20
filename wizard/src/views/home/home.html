@@ -1,5 +1,5 @@
 <section class="home" style="height: 100%" >
-  <v-btn @click=" let closemsg = { type: 'CLOSE_INIT' }; window.Print.postMessage(JSON.stringify(closemsg))" class="mt-5" absolute fab top right text>Skip</v-btn>
+  <v-btn  onclick="let closemsg = { type: 'CLOSE_INIT' }; window.Print.postMessage(JSON.stringify(closemsg))" class="mt-5" absolute fab top right text>Skip</v-btn>
   <v-carousel :continuous="false"  class="pt-5" height="100%">
       <v-carousel-item height="100%" >
           <v-sheet color="white" align="center" justify="center" height="100%" tile>
