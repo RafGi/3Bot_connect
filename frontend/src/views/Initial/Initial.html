@@ -53,7 +53,7 @@
           </v-card-actions>
         </v-form>
 
-        <v-card-text v-if="!(nameCheckStatus.checked && !nameCheckStatus.checking && !nameCheckStatus.available)" class="subheading pt-3" >This account doesn't exist yet. Please register using the mobile app! If you don't have the app, you can download by clicking below.</v-card-text>
+        <v-card-text v-if="!(nameCheckStatus.checked && !nameCheckStatus.checking && !nameCheckStatus.available) && doubleName != ''" class="subheading pt-3" >This account doesn't exist yet. Please register using the mobile app! If you don't have the app, you can download by clicking below.</v-card-text>
         <v-card-text v-else class="subheading pt-3" >You can login using the 3bot app. Download this app on the Google Play/ Apple app store.</v-card-text>
       </v-card>
 
