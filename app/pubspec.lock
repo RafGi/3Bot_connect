@@ -118,7 +118,7 @@ packages:
     description:
       path: "."
       ref: development
-      resolved-ref: e191222e0145f17fe4b1ac9793e38c04cab1cde4
+      resolved-ref: dce5ee57bc44d52b90e94f847fd8f538f7372e1d
       url: "https://github.com/coeneivan/flutter_webview_plugin"
     source: git
     version: "0.3.5"
