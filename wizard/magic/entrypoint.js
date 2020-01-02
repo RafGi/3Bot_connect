@@ -11,7 +11,7 @@ require.config({
     'babel-standalone': 'https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min',
     'babel-polyfill': 'https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min',
     'vue': 'https://cdn.jsdelivr.net/npm/vue/dist/vue',
-    'vuetify': 'https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify',
+    'vuetify': 'https://cdn.jsdelivr.net/npm/vuetify@2.2/dist/vuetify',
     
     // TODO: Change when releasing
     // 'vue': 'https://cdn.jsdelivr.net/npm/vue',
