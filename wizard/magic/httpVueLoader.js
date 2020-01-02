@@ -1,21 +1,21 @@
-(function umd(root,factory){
-	if(typeof module==='object' && typeof exports === 'object' )
-		module.exports=factory()
-	else if(typeof define==='function' && define.amd)
-		define([],factory)
+(function umd(root, factory) {
+	if (typeof module === 'object' && typeof exports === 'object')
+		module.exports = factory()
+	else if (typeof define === 'function' && define.amd)
+		define([], factory)
 	else
-		root.httpVueLoader=factory()
-})(this,function factory() {
+		root.httpVueLoader = factory()
+})(this, function factory() {
 	'use strict';
 
 	var scopeIndex = 0;
 
 	StyleContext.prototype = {
 
-		withBase: function(callback) {
+		withBase: function (callback) {
 
 			var tmpBaseElt;
-			if ( this.component.baseURI ) {
+			if (this.component.baseURI) {
 
 				// firefox and chrome need the <base> to be set while inserting or modifying <style> in a document.
 				tmpBaseElt = document.createElement('base');
@@ -27,30 +27,30 @@
 
 			callback.call(this);
 
-			if ( tmpBaseElt )
+			if (tmpBaseElt)
 				this.component.getHead().removeChild(tmpBaseElt);
 		},
 
-		scopeStyles: function(styleElt, scopeName) {
+		scopeStyles: function (styleElt, scopeName) {
 
 			function process() {
 
 				var sheet = styleElt.sheet;
 				var rules = sheet.cssRules;
 
-				for ( var i = 0; i < rules.length; ++i ) {
+				for (var i = 0; i < rules.length; ++i) {
 
 					var rule = rules[i];
-					if ( rule.type !== 1 )
+					if (rule.type !== 1)
 						continue;
 
 					var scopedSelectors = [];
 
-					rule.selectorText.split(/\s*,\s*/).forEach(function(sel) {
+					rule.selectorText.split(/\s*,\s*/).forEach(function (sel) {
 
-						scopedSelectors.push(scopeName+' '+sel);
+						scopedSelectors.push(scopeName + ' ' + sel);
 						var segments = sel.match(/([^ :]+)(.+)?/);
-						scopedSelectors.push(segments[1] + scopeName + (segments[2]||''));
+						scopedSelectors.push(segments[1] + scopeName + (segments[2] || ''));
 					});
 
 					var scopedRule = scopedSelectors.join(',') + rule.cssText.substr(rule.selectorText.length);
@@ -64,7 +64,7 @@
 				process();
 			} catch (ex) {
 
-				if ( ex instanceof DOMException && ex.code === DOMException.INVALID_ACCESS_ERR ) {
+				if (ex instanceof DOMException && ex.code === DOMException.INVALID_ACCESS_ERR) {
 
 					styleElt.sheet.disabled = true;
 					styleElt.addEventListener('load', function onStyleLoaded() {
@@ -72,7 +72,7 @@
 						styleElt.removeEventListener('load', onStyleLoaded);
 
 						// firefox need this timeout otherwise we have to use document.importNode(style, true)
-						setTimeout(function() {
+						setTimeout(function () {
 
 							process();
 							styleElt.sheet.disabled = false;
@@ -85,41 +85,41 @@
 			}
 		},
 
-		compile: function() {
+		compile: function () {
 
 			var hasTemplate = this.template !== null;
 
 			var scoped = this.elt.hasAttribute('scoped');
 
-			if ( scoped ) {
+			if (scoped) {
 
 				// no template, no scopable style needed
-				if ( !hasTemplate )
+				if (!hasTemplate)
 					return;
 
 				// firefox does not tolerate this attribute
 				this.elt.removeAttribute('scoped');
 			}
 
-			this.withBase(function() {
+			this.withBase(function () {
 
 				this.component.getHead().appendChild(this.elt);
 			});
 
-			if ( scoped )
-				this.scopeStyles(this.elt, '['+this.component.getScopeId()+']');
+			if (scoped)
+				this.scopeStyles(this.elt, '[' + this.component.getScopeId() + ']');
 
 			return Promise.resolve();
 		},
 
-		getContent: function() {
+		getContent: function () {
 
 			return this.elt.textContent;
 		},
 
-		setContent: function(content) {
+		setContent: function (content) {
 
-			this.withBase(function() {
+			this.withBase(function () {
 
 				this.elt.textContent = content;
 			});
@@ -135,33 +135,33 @@
 
 	ScriptContext.prototype = {
 
-		getContent: function() {
+		getContent: function () {
 
 			return this.elt.textContent;
 		},
 
-		setContent: function(content) {
+		setContent: function (content) {
 
 			this.elt.textContent = content;
 		},
 
-		compile: function(module) {
+		compile: function (module) {
 
-			var childModuleRequire = function(childURL) {
+			var childModuleRequire = function (childURL) {
 				console.log(`child module`)
 				return httpVueLoader(resolveURL(this.component.baseURI, childURL));
 			}.bind(this);
 
-			var childLoader = function(childURL, childName) {
+			var childLoader = function (childURL, childName) {
 				console.log(`childloader`)
 				return httpVueLoader(resolveURL(this.component.baseURI, childURL), childName);
 			}.bind(this);
 
 			try {
 				Function('exports', 'require', 'httpVueLoader', 'module', this.getContent()).call(this.module.exports, this.module.exports, childModuleRequire, childLoader, this.module);
-			} catch(ex) {
+			} catch (ex) {
 
-				if ( !('lineNumber' in ex) ) {
+				if (!('lineNumber' in ex)) {
 
 					return Promise.reject(ex);
 				}
@@ -171,11 +171,11 @@
 			}
 
 			return Promise.resolve(this.module.exports)
-			.then(httpVueLoader.scriptExportsHandler.bind(this))
-			.then(function(exports) {
+				.then(httpVueLoader.scriptExportsHandler.bind(this))
+				.then(function (exports) {
 
-				this.module.exports = exports;
-			}.bind(this));
+					this.module.exports = exports;
+				}.bind(this));
 		}
 	};
 
@@ -183,37 +183,37 @@
 
 		this.component = component;
 		this.elt = elt;
-		this.module = { exports:{} };
+		this.module = { exports: {} };
 	}
 
 
 	TemplateContext.prototype = {
 
-		getContent: function() {
+		getContent: function () {
 
 			return this.elt.innerHTML;
 		},
 
-		setContent: function(content) {
+		setContent: function (content) {
 
 			this.elt.innerHTML = content;
 		},
 
-		getRootElt: function() {
+		getRootElt: function () {
 
 			var tplElt = this.elt.content || this.elt;
 
-			if ( 'firstElementChild' in tplElt )
+			if ('firstElementChild' in tplElt)
 				return tplElt.firstElementChild;
 
-			for ( tplElt = tplElt.firstChild; tplElt !== null; tplElt = tplElt.nextSibling )
-				if ( tplElt.nodeType === Node.ELEMENT_NODE )
+			for (tplElt = tplElt.firstChild; tplElt !== null; tplElt = tplElt.nextSibling)
+				if (tplElt.nodeType === Node.ELEMENT_NODE)
 					return tplElt;
 
 			return null;
 		},
 
-		compile: function() {
+		compile: function () {
 
 			return Promise.resolve();
 		}
@@ -229,14 +229,14 @@
 
 	Component.prototype = {
 
-		getHead: function() {
+		getHead: function () {
 
 			return document.head || document.getElementsByTagName('head')[0];
 		},
 
-		getScopeId: function() {
+		getScopeId: function () {
 
-			if ( this._scopeId === '' ) {
+			if (this._scopeId === '') {
 
 				this._scopeId = 'data-s-' + (scopeIndex++).toString(36);
 				this.template.getRootElt().setAttribute(this._scopeId, '');
@@ -244,110 +244,118 @@
 			return this._scopeId;
 		},
 
-		load: function(componentURL) {
+		load: function (componentURL) {
 
 			return httpVueLoader.httpRequest(componentURL)
-			.then(function(responseText) {
+				.then(function (responseText) {
 
-				this.baseURI = componentURL.substr(0, componentURL.lastIndexOf('/')+1);
-				var doc = document.implementation.createHTMLDocument('');
+					this.baseURI = componentURL.substr(0, componentURL.lastIndexOf('/') + 1);
+					var doc = document.implementation.createHTMLDocument('');
 
-				// IE requires the <base> to come with <style>
-				doc.body.innerHTML = (this.baseURI ? '<base href="'+this.baseURI+'">' : '') + responseText;
+					// IE requires the <base> to come with <style>
+					doc.body.innerHTML = (this.baseURI ? '<base href="' + this.baseURI + '">' : '') + responseText;
 
-				for ( var it = doc.body.firstChild; it; it = it.nextSibling ) {
+					for (var it = doc.body.firstChild; it; it = it.nextSibling) {
 
-					switch ( it.nodeName ) {
-						case 'TEMPLATE':
-                            if (it.attributes.getNamedItem('src')) {
-								var newIt = document.createAttribute("src")
-								newIt.value = this.baseURI + it.attributes.getNamedItem('src').value
-								it.attributes.setNamedItem(newIt)
-                            }
-							this.template = new TemplateContext(this, it);
-							break;
-						case 'SCRIPT':
-							if (it.attributes.getNamedItem('src')) {
-								var newIt = document.createAttribute("src")
-								newIt.value = this.baseURI + it.attributes.getNamedItem('src').value
-								it.attributes.setNamedItem(newIt)
-							}
-							this.script = new ScriptContext(this, it);
-							break;
-						case 'STYLE':
-							if (it.attributes.getNamedItem('src')) {
-								var newIt = document.createAttribute("src")
-								newIt.value = this.baseURI + it.attributes.getNamedItem('src').value
-								it.attributes.setNamedItem(newIt)
-							}
-							this.styles.push(new StyleContext(this, it));
-							break;
+						switch (it.nodeName) {
+							case 'TEMPLATE':
+								if (it.attributes.getNamedItem('src')) {
+									var newIt = document.createAttribute("src")
+									newIt.value = this.baseURI + it.attributes.getNamedItem('src').value
+									it.attributes.setNamedItem(newIt)
+								}
+								this.template = new TemplateContext(this, it);
+								break;
+							case 'SCRIPT':
+								if (it.attributes.getNamedItem('src')) {
+									var newIt = document.createAttribute("src")
+									newIt.value = this.baseURI + it.attributes.getNamedItem('src').value
+									it.attributes.setNamedItem(newIt)
+								}
+								this.script = new ScriptContext(this, it);
+								break;
+							case 'STYLE':
+								if (it.attributes.getNamedItem('src')) {
+									var newIt = document.createAttribute("src")
+									newIt.value = this.baseURI + it.attributes.getNamedItem('src').value
+									it.attributes.setNamedItem(newIt)
+								}
+								this.styles.push(new StyleContext(this, it));
+								break;
+						}
 					}
-				}
 
-				return this;
-			}.bind(this));
+					return this;
+				}.bind(this));
 		},
 
-		_normalizeSection: function(eltCx) {
+		_normalizeSection: function (eltCx) {
 
 			var p;
 
-			if ( eltCx === null || !eltCx.elt.hasAttribute('src') ) {
+			if (eltCx === null || !eltCx.elt.hasAttribute('src')) {
 
 				p = Promise.resolve(null);
 			} else {
 
 				p = httpVueLoader.httpRequest(eltCx.elt.getAttribute('src'))
-				.then(function(content) {
+					.then(function (content) {
 
-					eltCx.elt.removeAttribute('src');
-					return content;
-				});
+						eltCx.elt.removeAttribute('src');
+						return content;
+					});
 			}
 
 			return p
-			.then(function(content) {
+				.then(function (content) {
 
-				if ( eltCx !== null && eltCx.elt.hasAttribute('lang') ) {
+					if (eltCx !== null && eltCx.elt.hasAttribute('lang')) {
 
-					var lang = eltCx.elt.getAttribute('lang');
-					eltCx.elt.removeAttribute('lang');
-					return httpVueLoader.langProcessor[lang.toLowerCase()].call(this, content === null ? eltCx.getContent() : content);
-				}
-				return content;
-			}.bind(this))
-			.then(function(content) {
+						var lang = eltCx.elt.getAttribute('lang');
+						eltCx.elt.removeAttribute('lang');
+						if (httpVueLoader.langProcessor[lang.toLowerCase()] !== undefined) {
 
-				if ( content !== null )
-					eltCx.setContent(content);
-			});
+							return httpVueLoader.langProcessor[lang.toLowerCase()].call(this, content === null ? eltCx.getContent() : content);
+						}else{
+							return setTimeout(function () {
+								return httpVueLoader.langProcessor[lang.toLowerCase()].call(this, content === null ? eltCx.getContent() : content);
+							},1);
+						}
+					}
+					return content;
+				}.bind(this))
+				.then(function (content) {
+
+					if (content !== null)
+						eltCx.setContent(content);
+				});
+
 		},
 
-		normalize: function() {
+		normalize: function () {
 
 			return Promise.all(Array.prototype.concat(
 				this._normalizeSection(this.template),
 				this._normalizeSection(this.script),
 				this.styles.map(this._normalizeSection)
 			))
-			.then(function() {
+				.then(function () {
 
-				return this;
-			}.bind(this));
+					return this;
+				}.bind(this));
 		},
 
-		compile: function() {
+		compile: function () {
 
 			return Promise.all(Array.prototype.concat(
 				this.template && this.template.compile(),
 				this.script && this.script.compile(),
-				this.styles.map(function(style) { return style.compile(); })
+				this.styles.map(function (style) { return style.compile(); })
 			))
-			.then(function() {
+				.then(function () {
 
-				return this;
-			}.bind(this));
+					return this;
+				}.bind(this));
 		}
 	};
 
@@ -383,44 +391,44 @@
 	}
 
 
-	httpVueLoader.load = function(url, name) {
+	httpVueLoader.load = function (url, name) {
 
-		return function() {
+		return function () {
 
 			return new Component(name).load(url)
-			.then(function(component) {
-				return component.normalize();
-			})
-			.then(function(component) {
+				.then(function (component) {
+					return component.normalize();
+				})
+				.then(function (component) {
 
-				return component.compile();
-			})
-			.then(function(component) {
+					return component.compile();
+				})
+				.then(function (component) {
 
-				var exports = component.script !== null ? component.script.module.exports : {};
+					var exports = component.script !== null ? component.script.module.exports : {};
 
-				if ( component.template !== null )
-					exports.template = component.template.getContent();
+					if (component.template !== null)
+						exports.template = component.template.getContent();
 
-				if ( exports.name === undefined )
-					if ( component.name !== undefined )
-						exports.name = component.name;
+					if (exports.name === undefined)
+						if (component.name !== undefined)
+							exports.name = component.name;
 
-				exports._baseURI = component.baseURI;
+					exports._baseURI = component.baseURI;
 
-				return exports;
-			});
+					return exports;
+				});
 		};
 	};
 
 
-	httpVueLoader.register = function(Vue, url) {
+	httpVueLoader.register = function (Vue, url) {
 
 		var comp = parseComponentURL(url);
 		Vue.component(comp.name, httpVueLoader.load(comp.url));
 	};
 
-	httpVueLoader.install = function(Vue) {
+	httpVueLoader.install = function (Vue) {
 
 		Vue.mixin({
 
@@ -428,15 +436,15 @@
 
 				var components = this.$options.components;
 
-				for ( var componentName in components ) {
+				for (var componentName in components) {
 
-					if ( typeof(components[componentName]) === 'string' && components[componentName].substr(0, 4) === 'url:' ) {
+					if (typeof (components[componentName]) === 'string' && components[componentName].substr(0, 4) === 'url:') {
 
 						var comp = parseComponentURL(components[componentName].substr(4));
 
 						var componentURL = ('_baseURI' in this.$options) ? resolveURL(this.$options._baseURI, comp.url) : comp.url;
 
-						if ( isNaN(componentName) )
+						if (isNaN(componentName))
 							components[componentName] = httpVueLoader.load(componentURL, componentName);
 						else
 							components[componentName] = Vue.component(comp.name, httpVueLoader.load(componentURL, comp.name));
@@ -446,22 +454,22 @@
 		});
 	};
 
-	httpVueLoader.require = function(moduleName) {
+	httpVueLoader.require = function (moduleName) {
 
 		return window[moduleName];
 	};
 
-	httpVueLoader.httpRequest = function(url) {
-		return new Promise(function(resolve, reject) {
+	httpVueLoader.httpRequest = function (url) {
+		return new Promise(function (resolve, reject) {
 
 			var xhr = new XMLHttpRequest();
 			xhr.open('GET', url);
 
-			xhr.onreadystatechange = function() {
+			xhr.onreadystatechange = function () {
 
-				if ( xhr.readyState === 4 ) {
+				if (xhr.readyState === 4) {
 
-					if ( xhr.status >= 200 && xhr.status < 300 )
+					if (xhr.status >= 200 && xhr.status < 300)
 						resolve(xhr.responseText);
 					else
 						reject(xhr.status);
