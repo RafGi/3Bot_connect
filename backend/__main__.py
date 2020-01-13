@@ -308,6 +308,14 @@ def show_apps_handler():
 def min_version_handler():
     return Response('56')
 
+@app.route('/api/minimumversion', methods=['get'])
+def minimum_version_handler():
+    response = app.response_class(
+        response=json.dumps({ "android": 65, "ios": 57 }),
+        mimetype='application/json'
+    )
+
+    return response
 
 def verify_signed_data(double_name, data):
     # print('/n### --- data verification --- ###')
