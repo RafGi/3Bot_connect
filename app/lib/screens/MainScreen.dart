@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:threebotlogin/AppConfig.dart';
 import 'package:threebotlogin/Events/Events.dart';
+import 'package:threebotlogin/helpers/Environment.dart';
 import 'package:threebotlogin/helpers/Globals.dart';
 import 'package:threebotlogin/screens/HomeScreen.dart';
 import 'package:threebotlogin/screens/InitScreen.dart';
@@ -33,7 +34,7 @@ class _AppState extends State<MainScreen> {
   BackendConnection _backendConnection;
 
   pushScreens() async {
-    // Internet connection check. 
+    // Internet connection check.
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
@@ -50,32 +51,34 @@ class _AppState extends State<MainScreen> {
       SystemNavigator.pop();
     }
 
-    // Internet connection check to our servers.
-    try {
-      String baseUrl = AppConfig().baseUrl();
-      final result = await InternetAddress.lookup('$baseUrl');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        print('connected to the internet');
+    if (AppConfig().environment != Environment.Local) {
+      // Internet connection check to our servers.
+      try {
+        String baseUrl = AppConfig().baseUrl();
+        final result = await InternetAddress.lookup('$baseUrl');
+        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+          print('connected to the internet');
+        }
+      } on SocketException catch (_) {
+        var dialog = CustomDialog(
+            title: "Oops",
+            description: Text(
+              "Something went wrong, please try again. Contact support if this issue persists.",
+              textAlign: TextAlign.center,
+            ));
+        await dialog.show(context);
+        SystemNavigator.pop();
       }
-    } on SocketException catch (_) {
-      var dialog = CustomDialog(
-          title: "Oops",
-          description: Text(
-            "Something went wrong, please try again. Contact support if this issue persists.",
-            textAlign: TextAlign.center,
-          ));
-      await dialog.show(context);
-      SystemNavigator.pop();
     }
 
     // Version check. TODO: Maybe add a button to open the app / playstore?
-    if(!await isAppUpToDate()) {
+    if (!await isAppUpToDate()) {
       var dialog = CustomDialog(
-        title: "Update required",
-        description: Text(
-          "The app is outdated. Please, update it to the latest version.",
-          textAlign: TextAlign.center,
-      ));
+          title: "Update required",
+          description: Text(
+            "The app is outdated. Please, update it to the latest version.",
+            textAlign: TextAlign.center,
+          ));
 
       await dialog.show(context);
       SystemNavigator.pop();
@@ -95,8 +98,8 @@ class _AppState extends State<MainScreen> {
 
     _backendConnection = BackendConnection(await getDoubleName());
     _backendConnection.init();
-    if(_sub != null){
-    _sub.cancel();
+    if (_sub != null) {
+      _sub.cancel();
     }
 
     await Navigator.pushReplacement(

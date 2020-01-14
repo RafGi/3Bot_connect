@@ -46,7 +46,6 @@ def connect_handler():
 
 @sio.on('disconnect')
 def disconnect_handler():
-
     logger.debug("/disconnected.")
     if request.sid in socketRoom:
         room = socketRoom[request.sid].lower()
@@ -106,7 +105,6 @@ usersInRoom = {}  # users that are in a room
 messageQueue = {}
 socketRoom = {}  # room bound to a socket
 
-
 def emitOrQueue(event, data, room):
     logger.debug("Emit or queue data %s", data)
     if not room in usersInRoom or usersInRoom[room] == 0:
@@ -125,28 +123,18 @@ def emitOrQueue(event, data, room):
 @sio.on('login')
 def login_handler(data):
     logger.debug("/Login %s", data)
-    double_name = data.get('doubleName').lower()
-    state = data.get('state')
 
     data['type'] = 'login'
-    sid = request.sid
-    user = db.getUserByName(conn, double_name)
-    if user:
-        logger.debug("User found %s", user[0])
-        update_sql = "UPDATE users SET sid=?  WHERE double_name=?;"
-        db.update_user(conn, update_sql, sid, user[0])
-
-    user = db.getUserByName(conn, double_name)
-    emitOrQueue('login', data, room=user[0])
+    emitOrQueue('login', data, room=data.get('doubleName').lower())
 
 
 @sio.on('resend')
 def resend_handler(data):
     logger.debug("/resend %s", data)
-    user = data.get('doubleName').lower()
 
+    # TODO: Type should be changed in the future
     data['type'] = 'login'
-    emitOrQueue('login', data, room=user)
+    emitOrQueue('login', data, room=data.get('doubleName').lower())
 
 
 @app.route('/api/signRegister', methods=['POST'])
